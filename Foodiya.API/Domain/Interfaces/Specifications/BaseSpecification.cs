@@ -112,6 +112,8 @@ public abstract class BaseSpecification<T> : ISpecification<T> where T : class
         Take = take;
     }
 
+    public void RestrictTo(Expression<Func<T, bool>> criteria) => Criterias.Add(criteria);
+
     protected void ApplyTracking()
         => AsNoTracking = false;
 

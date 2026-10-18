@@ -19,6 +19,7 @@ public sealed class RecipeCountSpecification : BaseSpecification<Recipe>
             r.DeletedAt == null
             && r.Status == RecipeStatusConstants.Published
             && r.IsActive
+            && r.Visibility == RecipeVisibilityConstants.Public
             && (!cuisineId.HasValue || r.CuisineId == cuisineId.Value)
             && (!difficultyId.HasValue || r.DifficultyId == difficultyId.Value)
             && (!categoryId.HasValue || r.FoodCategories.Any(c => c.Id == categoryId.Value))

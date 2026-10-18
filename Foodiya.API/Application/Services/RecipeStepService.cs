@@ -36,7 +36,9 @@ public sealed class RecipeStepService : IRecipeStepService
     public async Task<RecipeStepDetailResponse?> GetByIdAsync(Guid uuid, CancellationToken ct = default)
     {
         var recipeStep = await _recipeStepRepo.GetByUuidAsync(uuid, ct);
-        return recipeStep is null ? null : await GetByIdInternalAsync(recipeStep.Id, ct);
+        if (recipeStep is null) return null;
+        await _authorization.RequireRecipeReadAsync(recipeStep.RecipeId, ct);
+        return await GetByIdInternalAsync(recipeStep.Id, ct);
     }
 
     public async Task<PaginatedResponse<RecipeStepDetailResponse>> ListAsync(
@@ -52,6 +54,10 @@ public sealed class RecipeStepService : IRecipeStepService
 
         var listSpec = new RecipeStepListSpecification(page, pageSize, recipeId, search);
         var countSpec = new RecipeStepCountSpecification(recipeId, search);
+
+        var access = await _authorization.GetReadAccessAsync(ct);
+        listSpec.RestrictTo(access.Children((RecipeStep child) => child.Recipe, allowUnlisted: recipeUuid.HasValue));
+        countSpec.RestrictTo(access.Children((RecipeStep child) => child.Recipe, allowUnlisted: recipeUuid.HasValue));
 
         var items = await _recipeStepRepo.ListAsync(listSpec, ct);
         var totalCount = await _recipeStepRepo.CountAsync(countSpec, ct);

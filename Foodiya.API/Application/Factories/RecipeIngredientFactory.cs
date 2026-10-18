@@ -1,6 +1,7 @@
 using Foodiya.Application.DTOs.RecipeIngredient.Request;
 using Foodiya.Application.Interfaces.Factories;
 using Foodiya.Domain.Exceptions;
+using Foodiya.Domain.Extensions;
 using Foodiya.Domain.Models;
 using static Foodiya.Application.Factories.Helpers.EntityNormalizationHelper;
 
@@ -16,7 +17,8 @@ public sealed class RecipeIngredientFactory : IRecipeIngredientFactory
         UnitId = request.UnitId,
         IsOptional = request.IsOptional,
         Notes = Optional(request.Notes),
-        SortOrder = request.SortOrder
+        SortOrder = request.SortOrder,
+        Code = EntityCodeGenerator.For("RIG")
     };
 
     public void Update(RecipeIngredient recipeIngredient, UpdateRecipeIngredientRequest request)

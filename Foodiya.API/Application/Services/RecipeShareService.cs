@@ -39,7 +39,9 @@ public sealed class RecipeShareService : IRecipeShareService
     public async Task<RecipeShareDetailResponse?> GetByIdAsync(Guid uuid, CancellationToken ct = default)
     {
         var recipeShare = await _recipeShareRepo.GetByUuidAsync(uuid, ct);
-        return recipeShare is null ? null : await GetByIdInternalAsync(recipeShare.Id, ct);
+        if (recipeShare is null) return null;
+        await _authorization.RequireShareReadAsync(recipeShare, ct);
+        return await GetByIdInternalAsync(recipeShare.Id, ct);
     }
 
     public async Task<PaginatedResponse<RecipeShareDetailResponse>> ListAsync(
@@ -57,6 +59,12 @@ public sealed class RecipeShareService : IRecipeShareService
         var sharedWithUserId = sharedWithUserUuid.HasValue ? (await _userRepo.GetRequiredByUuidAsync(sharedWithUserUuid.Value, nameof(AppUser), ct)).Id : (int?)null;
         var listSpec = new RecipeShareListSpecification(page, pageSize, recipeId, sharedByUserId, sharedWithUserId, channel, search);
         var countSpec = new RecipeShareCountSpecification(recipeId, sharedByUserId, sharedWithUserId, channel, search);
+
+        var access = await _authorization.GetReadAccessAsync(ct);
+        listSpec.RestrictTo(share => access.IsAdministrator || share.SharedByUserId == access.ActorId || share.SharedWithUserId == access.ActorId);
+        countSpec.RestrictTo(share => access.IsAdministrator || share.SharedByUserId == access.ActorId || share.SharedWithUserId == access.ActorId);
+        listSpec.RestrictTo(access.Children((RecipeShare share) => share.Recipe, allowUnlisted: true));
+        countSpec.RestrictTo(access.Children((RecipeShare share) => share.Recipe, allowUnlisted: true));
 
         var items = await _recipeShareRepo.ListAsync(listSpec, ct);
         var totalCount = await _recipeShareRepo.CountAsync(countSpec, ct);
@@ -77,6 +85,7 @@ public sealed class RecipeShareService : IRecipeShareService
     {
         request.RecipeId = (await _recipeRepo.GetRequiredByUuidAsync(request.RecipeUuid, nameof(Recipe), ct)).Id;
         request.SharedByUserId = await _authorization.GetActorIdAsync(request.SharedByUserUuid, ct);
+        await _authorization.RequireRecipeShareAsync(request.RecipeId, ct);
         await EnsureRecipeExistsAsync(request.RecipeId, ct);
         await EnsureUserExistsAsync(request.SharedByUserId, "SharedByUser", ct);
 

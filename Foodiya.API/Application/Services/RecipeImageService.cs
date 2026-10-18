@@ -36,7 +36,9 @@ public sealed class RecipeImageService : IRecipeImageService
     public async Task<RecipeImageDetailResponse?> GetByIdAsync(Guid uuid, CancellationToken ct = default)
     {
         var recipeImage = await _recipeImageRepo.GetByUuidAsync(uuid, ct);
-        return recipeImage is null ? null : await GetByIdInternalAsync(recipeImage.Id, ct);
+        if (recipeImage is null) return null;
+        await _authorization.RequireRecipeReadAsync(recipeImage.RecipeId, ct);
+        return await GetByIdInternalAsync(recipeImage.Id, ct);
     }
 
     public async Task<PaginatedResponse<RecipeImageDetailResponse>> ListAsync(
@@ -53,6 +55,10 @@ public sealed class RecipeImageService : IRecipeImageService
 
         var listSpec = new RecipeImageListSpecification(page, pageSize, recipeId, isPrimary, search);
         var countSpec = new RecipeImageCountSpecification(recipeId, isPrimary, search);
+
+        var access = await _authorization.GetReadAccessAsync(ct);
+        listSpec.RestrictTo(access.Children((RecipeImage child) => child.Recipe, allowUnlisted: recipeUuid.HasValue));
+        countSpec.RestrictTo(access.Children((RecipeImage child) => child.Recipe, allowUnlisted: recipeUuid.HasValue));
 
         var items = await _recipeImageRepo.ListAsync(listSpec, ct);
         var totalCount = await _recipeImageRepo.CountAsync(countSpec, ct);

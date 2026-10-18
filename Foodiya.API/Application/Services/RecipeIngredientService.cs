@@ -42,7 +42,9 @@ public sealed class RecipeIngredientService : IRecipeIngredientService
     public async Task<RecipeIngredientDetailResponse?> GetByIdAsync(Guid uuid, CancellationToken ct = default)
     {
         var recipeIngredient = await _recipeIngredientRepo.GetByUuidAsync(uuid, ct);
-        return recipeIngredient is null ? null : await GetByIdInternalAsync(recipeIngredient.RecipeId, recipeIngredient.IngredientId, ct);
+        if (recipeIngredient is null) return null;
+        await _authorization.RequireRecipeReadAsync(recipeIngredient.RecipeId, ct);
+        return await GetByIdInternalAsync(recipeIngredient.RecipeId, recipeIngredient.IngredientId, ct);
     }
 
     public async Task<PaginatedResponse<RecipeIngredientDetailResponse>> ListAsync(
@@ -60,6 +62,10 @@ public sealed class RecipeIngredientService : IRecipeIngredientService
 
         var listSpec = new RecipeIngredientListSpecification(page, pageSize, recipeId, ingredientId, unitId, search);
         var countSpec = new RecipeIngredientCountSpecification(recipeId, ingredientId, unitId, search);
+
+        var access = await _authorization.GetReadAccessAsync(ct);
+        listSpec.RestrictTo(access.Children((RecipeIngredient child) => child.Recipe, allowUnlisted: recipeUuid.HasValue));
+        countSpec.RestrictTo(access.Children((RecipeIngredient child) => child.Recipe, allowUnlisted: recipeUuid.HasValue));
 
         var items = await _recipeIngredientRepo.ListAsync(listSpec, ct);
         var totalCount = await _recipeIngredientRepo.CountAsync(countSpec, ct);

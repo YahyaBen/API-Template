@@ -62,7 +62,9 @@ public sealed class RecipeService : IRecipeService
     public async Task<RecipeDetailResponse?> GetByIdAsync(Guid uuid, CancellationToken ct = default)
     {
         var recipe = await _recipeRepo.GetByUuidAsync(uuid, ct);
-        return recipe is null ? null : await GetByIdInternalAsync(recipe.Id, ct);
+        if (recipe is null) return null;
+        await _authorization.RequireRecipeReadAsync(recipe.Id, ct);
+        return await GetByIdInternalAsync(recipe.Id, ct);
     }
 
     public async Task<PaginatedResponse<RecipeDetailResponse>> ListAsync(

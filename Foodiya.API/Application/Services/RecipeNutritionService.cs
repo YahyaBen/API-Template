@@ -36,6 +36,7 @@ public sealed class RecipeNutritionService : IRecipeNutritionService
     public async Task<RecipeNutritionDetailResponse?> GetByIdAsync(Guid recipeUuid, CancellationToken ct = default)
     {
         var recipeId = (await _recipeRepo.GetRequiredByUuidAsync(recipeUuid, nameof(Recipe), ct)).Id;
+        await _authorization.RequireRecipeReadAsync(recipeId, ct);
         var recipeNutrition = await _recipeNutritionRepo.GetSingleAsync(new RecipeNutritionByIdSpecification(recipeId), ct);
         return recipeNutrition is null ? null : _mapper.Map<RecipeNutritionDetailResponse>(recipeNutrition);
     }
@@ -50,6 +51,10 @@ public sealed class RecipeNutritionService : IRecipeNutritionService
         var recipeId = recipeUuid.HasValue ? (await _recipeRepo.GetRequiredByUuidAsync(recipeUuid.Value, nameof(Recipe), ct)).Id : (int?)null;
         var listSpec = new RecipeNutritionListSpecification(page, pageSize, recipeId, search);
         var countSpec = new RecipeNutritionCountSpecification(recipeId, search);
+
+        var access = await _authorization.GetReadAccessAsync(ct);
+        listSpec.RestrictTo(access.Children((RecipeNutrition child) => child.Recipe, allowUnlisted: recipeUuid.HasValue));
+        countSpec.RestrictTo(access.Children((RecipeNutrition child) => child.Recipe, allowUnlisted: recipeUuid.HasValue));
 
         var items = await _recipeNutritionRepo.ListAsync(listSpec, ct);
         var totalCount = await _recipeNutritionRepo.CountAsync(countSpec, ct);

@@ -39,7 +39,8 @@ public sealed class RecipeLikeService : IRecipeLikeService
     public async Task<RecipeLikeDetailResponse?> GetByIdAsync(Guid recipeUuid, Guid userUuid, CancellationToken ct = default)
     {
         var recipeId = (await _recipeRepo.GetRequiredByUuidAsync(recipeUuid, nameof(Recipe), ct)).Id;
-        var userId = await _authorization.GetActorIdAsync(userUuid, ct);
+        await _authorization.RequireRecipeReadAsync(recipeId, ct);
+        var userId = (await _userRepo.GetRequiredByUuidAsync(userUuid, nameof(AppUser), ct)).Id;
         var recipeLike = await _recipeLikeRepo.GetSingleAsync(new RecipeLikeByIdSpecification(recipeId, userId), ct);
         return recipeLike is null ? null : _mapper.Map<RecipeLikeDetailResponse>(recipeLike);
     }
@@ -56,6 +57,10 @@ public sealed class RecipeLikeService : IRecipeLikeService
         var userId = userUuid.HasValue ? (await _userRepo.GetRequiredByUuidAsync(userUuid.Value, nameof(AppUser), ct)).Id : (int?)null;
         var listSpec = new RecipeLikeListSpecification(page, pageSize, recipeId, userId, search);
         var countSpec = new RecipeLikeCountSpecification(recipeId, userId, search);
+
+        var access = await _authorization.GetReadAccessAsync(ct);
+        listSpec.RestrictTo(access.Children((RecipeLike child) => child.Recipe, allowUnlisted: recipeUuid.HasValue));
+        countSpec.RestrictTo(access.Children((RecipeLike child) => child.Recipe, allowUnlisted: recipeUuid.HasValue));
 
         var items = await _recipeLikeRepo.ListAsync(listSpec, ct);
         var totalCount = await _recipeLikeRepo.CountAsync(countSpec, ct);
@@ -76,6 +81,7 @@ public sealed class RecipeLikeService : IRecipeLikeService
     {
         request.RecipeId = (await _recipeRepo.GetRequiredByUuidAsync(request.RecipeUuid, nameof(Recipe), ct)).Id;
         request.UserId = await _authorization.GetActorIdAsync(request.UserUuid, ct);
+        await _authorization.RequireRecipeReadAsync(request.RecipeId, ct);
         await EnsureRecipeExistsAsync(request.RecipeId, ct);
         await EnsureUserExistsAsync(request.UserId, ct);
 
