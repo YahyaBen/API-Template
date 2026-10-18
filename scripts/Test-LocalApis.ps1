@@ -141,6 +141,33 @@ $null = Invoke-CheckedRequest -Name 'Logout session' -Uri "$IdentityUrl/api/auth
 $null = Invoke-CheckedRequest -Name 'Identity rejects revoked session' -Uri "$IdentityUrl/api/users/me" -AccessToken $refreshed.accessToken -ExpectedStatus 401
 $null = Invoke-CheckedRequest -Name 'Refresh replay rejected after logout' -Uri "$IdentityUrl/api/auth/token/refresh" -Method POST -Body @{ RefreshToken=$login.refreshToken } -ExpectedStatus 401
 
+# Send the same refresh token twice concurrently. Reuse must revoke the session.
+$raceLogin = Invoke-CheckedRequest -Name 'Login for refresh race' -Uri "$IdentityUrl/api/auth/login" -Method POST -Body @{
+    Login=$email; Password=$password; DeviceInstallationId="race-$suffix"; Platform='web'; DeviceName='Refresh race test'
+}
+$client=[Net.Http.HttpClient]::new()
+$firstResponse=$null; $secondResponse=$null
+try {
+    $client.Timeout=[TimeSpan]::FromSeconds(30)
+    $raceJson=ConvertTo-Json @{RefreshToken=$raceLogin.refreshToken} -Compress
+    $firstContent=[Net.Http.StringContent]::new($raceJson,[Text.Encoding]::UTF8,'application/json')
+    $secondContent=[Net.Http.StringContent]::new($raceJson,[Text.Encoding]::UTF8,'application/json')
+    $firstTask=$client.PostAsync("$IdentityUrl/api/auth/token/refresh",$firstContent)
+    $secondTask=$client.PostAsync("$IdentityUrl/api/auth/token/refresh",$secondContent)
+    $firstResponse=$firstTask.GetAwaiter().GetResult()
+    $secondResponse=$secondTask.GetAwaiter().GetResult()
+    $statuses=@([int]$firstResponse.StatusCode,[int]$secondResponse.StatusCode) | Sort-Object
+    if($statuses[0] -ne 200 -or $statuses[1] -ne 401){throw "Concurrent refresh returned HTTP $($statuses -join ', '); expected 200 and 401."}
+    $script:checks.Add([pscustomobject]@{Check='Concurrent refresh rotates once';Status=200})
+    $script:checks.Add([pscustomobject]@{Check='Concurrent refresh reuse rejected';Status=401})
+    $winner=if([int]$firstResponse.StatusCode -eq 200){$firstResponse}else{$secondResponse}
+    $raceTokens=ConvertFrom-Json ($winner.Content.ReadAsStringAsync().GetAwaiter().GetResult())
+    $null=Invoke-CheckedRequest -Name 'Refresh race revokes compromised session' -Uri "$IdentityUrl/api/users/me" -AccessToken $raceTokens.accessToken -ExpectedStatus 401
+} finally {
+    if($firstResponse){$firstResponse.Dispose()};if($secondResponse){$secondResponse.Dispose()}
+    $client.Dispose()
+}
+
 $report = [ordered]@{
     TestedAtUtc=[DateTime]::UtcNow.ToString('o')
     IdentityUrl=$IdentityUrl
