@@ -1,0 +1,35 @@
+# Build and test output
+**/bin/
+**/obj/
+**/artifacts/
+**/TestResults/
+*.binlog
+*.log
+*.nupkg
+*.zip
+
+# Editor and operating-system files
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+.DS_Store
+Thumbs.db
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+!**/.env.example
+**/secrets/
+**/appsettings.Local.json
+**/appsettings.Production.json
+**/local.settings.json
+*.pem
+*.key
+*.pfx
+*.p12
+*.publishsettings
+*.bak
+node_modules/

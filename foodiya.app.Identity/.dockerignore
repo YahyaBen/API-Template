@@ -1,0 +1,11 @@
+**/bin/
+**/obj/
+.git/
+.vs/
+.idea/
+TestResults/
+artifacts/
+.env
+secrets/
+*.user
+*.suo

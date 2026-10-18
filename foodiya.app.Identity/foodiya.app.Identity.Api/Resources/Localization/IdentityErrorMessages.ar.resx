@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="Title_Default" xml:space="preserve"><value>فشل الطلب</value></data>
+  <data name="Title_400" xml:space="preserve"><value>طلب غير صالح</value></data>
+  <data name="Title_401" xml:space="preserve"><value>المصادقة مطلوبة</value></data>
+  <data name="Title_403" xml:space="preserve"><value>الوصول مرفوض</value></data>
+  <data name="Title_404" xml:space="preserve"><value>المورد غير موجود</value></data>
+  <data name="Title_405" xml:space="preserve"><value>الطريقة غير مسموح بها</value></data>
+  <data name="Title_409" xml:space="preserve"><value>تعارض</value></data>
+  <data name="Title_415" xml:space="preserve"><value>نوع المحتوى غير مدعوم</value></data>
+  <data name="Title_423" xml:space="preserve"><value>الحساب مقفل</value></data>
+  <data name="Title_429" xml:space="preserve"><value>طلبات كثيرة جدًا</value></data>
+  <data name="Title_500" xml:space="preserve"><value>خطأ غير متوقع في الخادم</value></data>
+  <data name="Title_503" xml:space="preserve"><value>الخدمة غير متاحة</value></data>
+  <data name="Detail_Default" xml:space="preserve"><value>تعذّرت معالجة الطلب.</value></data>
+  <data name="Validation_FieldInvalid" xml:space="preserve"><value>قيمة هذا الحقل غير صالحة.</value></data>
+  <data name="Detail_BAD_REQUEST" xml:space="preserve"><value>تعذّرت معالجة الطلب.</value></data>
+  <data name="Detail_VALIDATION_FAILED" xml:space="preserve"><value>حقل واحد أو أكثر في الطلب غير صالح.</value></data>
+  <data name="Detail_MALFORMED_REQUEST" xml:space="preserve"><value>تعذّرت قراءة محتوى الطلب أو معاييره.</value></data>
+  <data name="Detail_AUTHENTICATION_REQUIRED" xml:space="preserve"><value>يلزم رمز Bearer صالح مرتبط بجلسة نشطة.</value></data>
+  <data name="Detail_AUTHORIZATION_FORBIDDEN" xml:space="preserve"><value>الحساب المصادَق عليه لا يملك الصلاحيات المطلوبة.</value></data>
+  <data name="Detail_RESOURCE_NOT_FOUND" xml:space="preserve"><value>المورد المطلوب غير موجود.</value></data>
+  <data name="Detail_METHOD_NOT_ALLOWED" xml:space="preserve"><value>طريقة HTTP غير مدعومة لهذا المورد.</value></data>
+  <data name="Detail_CONFLICT" xml:space="preserve"><value>يتعارض الطلب مع الحالة الحالية للمورد.</value></data>
+  <data name="Detail_UNSUPPORTED_MEDIA_TYPE" xml:space="preserve"><value>نوع محتوى الطلب غير مدعوم.</value></data>
+  <data name="Detail_RATE_LIMIT_EXCEEDED" xml:space="preserve"><value>أعد المحاولة بعد المدة المحددة.</value></data>
+  <data name="Detail_INTERNAL_SERVER_ERROR" xml:space="preserve"><value>حدث خطأ غير متوقع أثناء معالجة الطلب.</value></data>
+  <data name="Detail_SERVICE_UNAVAILABLE" xml:space="preserve"><value>الخدمة المطلوبة غير متاحة مؤقتًا.</value></data>
+  <data name="Detail_ACCESS_TOKEN_INVALID" xml:space="preserve"><value>رمز الوصول غير صالح.</value></data>
+  <data name="Detail_ACCESS_SESSION_INVALID" xml:space="preserve"><value>جلسة المصادقة لم تعد صالحة.</value></data>
+  <data name="Detail_ACCOUNT_LOCKED" xml:space="preserve"><value>الحساب مقفل مؤقتًا.</value></data>
+  <data name="Detail_ACCOUNT_UPDATE_REJECTED" xml:space="preserve"><value>تم رفض تحديث الحساب.</value></data>
+  <data name="Detail_INVALID_CREDENTIALS" xml:space="preserve"><value>البريد الإلكتروني أو اسم المستخدم أو كلمة المرور غير صحيح.</value></data>
+  <data name="Detail_LAST_SUPER_ADMIN_REQUIRED" xml:space="preserve"><value>عيّن مسؤولًا أعلى آخر قبل المتابعة.</value></data>
+  <data name="Detail_OTP_INVALID_OR_EXPIRED" xml:space="preserve"><value>رمز التأكيد غير صالح أو منتهي الصلاحية.</value></data>
+  <data name="Detail_OTP_RESEND_TOO_SOON" xml:space="preserve"><value>انتظر قبل طلب رمز تحقق آخر.</value></data>
+  <data name="Detail_PASSWORD_REUSED" xml:space="preserve"><value>اختر كلمة مرور لم تستخدمها مؤخرًا.</value></data>
+  <data name="Detail_GOOGLE_AUTH_NOT_CONFIGURED" xml:space="preserve"><value>مصادقة Google غير مهيأة.</value></data>
+  <data name="Detail_GOOGLE_ID_TOKEN_INVALID" xml:space="preserve"><value>رمز هوية Google غير صالح.</value></data>
+  <data name="Detail_ACCOUNT_NOT_ACTIVE" xml:space="preserve"><value>الحساب غير نشط.</value></data>
+  <data name="Detail_DEVICE_REVOKED" xml:space="preserve"><value>تم إلغاء هذا الجهاز.</value></data>
+  <data name="Detail_EMAIL_NOT_CONFIRMED" xml:space="preserve"><value>أكّد عنوان البريد الإلكتروني قبل تسجيل الدخول.</value></data>
+  <data name="Detail_GOOGLE_ACCOUNT_ALREADY_LINKED" xml:space="preserve"><value>حساب Google هذا مرتبط مسبقًا.</value></data>
+  <data name="Detail_GOOGLE_ACCOUNT_LINK_FAILED" xml:space="preserve"><value>تعذّر ربط حساب Google.</value></data>
+  <data name="Detail_GOOGLE_EMAIL_LINK_REQUIRES_VERIFICATION" xml:space="preserve"><value>تحقق من عنوان البريد الإلكتروني قبل ربط حساب Google هذا.</value></data>
+  <data name="Detail_GOOGLE_EMAIL_NOT_VERIFIED" xml:space="preserve"><value>عنوان بريد Google الإلكتروني غير موثّق.</value></data>
+  <data name="Detail_REFRESH_TOKEN_INVALID" xml:space="preserve"><value>رمز التحديث غير صالح أو منتهي الصلاحية.</value></data>
+  <data name="Detail_REFRESH_TOKEN_REUSE_DETECTED" xml:space="preserve"><value>تم اكتشاف إعادة استخدام رمز التحديث وإلغاء الجلسة.</value></data>
+  <data name="Detail_ROLE_INVALID" xml:space="preserve"><value>الدور المحدد غير صالح.</value></data>
+  <data name="Detail_ROLE_REQUIRED" xml:space="preserve"><value>الدور مطلوب.</value></data>
+  <data name="Detail_ROLE_UPDATE_REJECTED" xml:space="preserve"><value>تم رفض تعديل الدور.</value></data>
+  <data name="Detail_USER_NOT_FOUND" xml:space="preserve"><value>المستخدم المطلوب غير موجود.</value></data>
+  <data name="Detail_FIREBASE_INSTALLATION_INVALID" xml:space="preserve"><value>معرّف تثبيت Firebase غير صالح.</value></data>
+  <data name="Detail_FIREBASE_INSTALLATION_UNAVAILABLE" xml:space="preserve"><value>لا يمكن تعيين تثبيت Firebase هذا.</value></data>
+  <data name="Detail_DEVICE_ALREADY_VERIFIED" xml:space="preserve"><value>الجهاز الحالي موثّق مسبقًا.</value></data>
+  <data name="Detail_DEVICE_OR_SESSION_NOT_FOUND" xml:space="preserve"><value>الجهاز أو الجلسة المطلوبة غير موجودة.</value></data>
+  <data name="Detail_PAGINATION_INVALID" xml:space="preserve"><value>يجب ألا تكون قيمة skip سالبة، ويجب أن تكون قيمة take بين 1 و100.</value></data>
+  <data name="Detail_EMAIL_PROVIDER_NOT_CONFIGURED" xml:space="preserve"><value>مزود بريد الهوية غير مهيأ.</value></data>
+  <data name="Detail_EMAIL_DELIVERY_FAILED" xml:space="preserve"><value>تعذّر إرسال رسالة الهوية. يرجى المحاولة لاحقًا.</value></data>
+  <data name="Detail_ACCOUNT_ALREADY_CONFIRMED" xml:space="preserve"><value>تم تأكيد الحساب مسبقًا.</value></data>
+  <data name="Detail_EMAIL_ALREADY_REGISTERED" xml:space="preserve"><value>يوجد حساب مسبقًا لعنوان البريد الإلكتروني هذا.</value></data>
+  <data name="Detail_USERNAME_ALREADY_REGISTERED" xml:space="preserve"><value>اسم المستخدم هذا مستخدم مسبقًا.</value></data>
+  <data name="Detail_PENDING_REGISTRATION_NOT_FOUND" xml:space="preserve"><value>لا يوجد تسجيل معلّق لعنوان البريد الإلكتروني هذا.</value></data>
+  <data name="Detail_REGISTRATION_NOT_FOUND" xml:space="preserve"><value>تعذّر العثور على التسجيل المعلّق.</value></data>
+  <data name="Detail_REGISTRATION_REJECTED" xml:space="preserve"><value>تم رفض التسجيل. تحقق من بيانات الحساب المدخلة.</value></data>
+  <data name="Detail_REGISTRATION_CONFIRMATION_FAILED" xml:space="preserve"><value>تعذّر إكمال تأكيد الحساب.</value></data>
+  <data name="Detail_ROLE_ASSIGNMENT_FAILED" xml:space="preserve"><value>تعذّر تعيين الدور الافتراضي للحساب.</value></data>
+</root>

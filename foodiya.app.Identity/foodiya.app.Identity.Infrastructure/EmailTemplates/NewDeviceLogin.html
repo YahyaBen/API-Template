@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="{{language_code}}" dir="{{direction}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{title}}</title>
+</head>
+<body dir="{{direction}}" style="margin:0;padding:0;background:#f3f7f5;color:#18332b;font-family:Arial,Helvetica,sans-serif;direction:{{direction}};text-align:{{text_align}};">
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">{{preheader}}</div>
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f3f7f5;padding:24px 12px;">
+    <tr><td align="center">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;background:#ffffff;border:1px solid #dce8e2;border-radius:16px;overflow:hidden;">
+        <tr><td style="background:#356767;padding:24px 32px;color:#ffffff;font-size:28px;font-weight:700;letter-spacing:.5px;">foodiya.app.Identity</td></tr>
+        <tr><td style="padding:36px 32px;">
+          <p style="margin:0 0 12px;font-size:16px;">{{greeting}}</p>
+          <h1 style="margin:0 0 14px;font-size:26px;line-height:1.25;color:#214e43;">{{heading}}</h1>
+          <p style="margin:0 0 20px;color:#4d655d;font-size:16px;line-height:1.6;">{{message}}</p>
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:0 0 20px;background:#f7faf8;border-radius:10px;">
+            <tr><td style="padding:12px 16px;color:#60756e;font-size:14px;"><strong>{{device_label}}</strong></td><td style="padding:12px 16px;text-align:{{text_align}};color:#263f37;font-size:14px;">{{device_name}}</td></tr>
+            <tr><td style="padding:12px 16px;color:#60756e;font-size:14px;border-top:1px solid #e5ece8;"><strong>{{app_version_label}}</strong></td><td style="padding:12px 16px;text-align:{{text_align}};color:#263f37;font-size:14px;border-top:1px solid #e5ece8;">{{app_version}}</td></tr>
+            <tr><td style="padding:12px 16px;color:#60756e;font-size:14px;border-top:1px solid #e5ece8;"><strong>{{connected_label}}</strong></td><td style="padding:12px 16px;text-align:{{text_align}};color:#263f37;font-size:14px;border-top:1px solid #e5ece8;">{{connected_at}}</td></tr>
+          </table>
+          <div style="margin:24px 0;padding:22px;text-align:center;background:#eef8f3;border-inline-start:4px solid #04a64b;border-radius:10px;">
+            <div style="font-size:13px;color:#597068;text-transform:uppercase;letter-spacing:1px;">{{code_label}}</div>
+            <div style="margin-top:8px;color:#07823e;font-family:'Courier New',monospace;font-size:36px;font-weight:700;letter-spacing:7px;">{{code}}</div>
+          </div>
+          <p style="margin:0 0 8px;font-size:14px;color:#60756e;"><strong>{{challenge_reference_label}}</strong> {{challenge_id}}</p>
+          <p style="margin:0 0 24px;font-size:14px;color:#60756e;"><strong>{{expires_label}}</strong> {{expires_at}}</p>
+          <div style="padding:14px 16px;background:#fff8e8;border-radius:8px;color:#765a16;font-size:14px;line-height:1.5;">{{safety_notice}}</div>
+        </td></tr>
+        <tr><td style="padding:20px 32px;background:#f8fbf9;color:#6a7e77;font-size:13px;line-height:1.5;">{{footer}}</td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>

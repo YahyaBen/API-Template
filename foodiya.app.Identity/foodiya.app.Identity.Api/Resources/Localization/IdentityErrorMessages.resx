@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="Title_Default" xml:space="preserve"><value>Request failed</value></data>
+  <data name="Title_400" xml:space="preserve"><value>Invalid request</value></data>
+  <data name="Title_401" xml:space="preserve"><value>Authentication required</value></data>
+  <data name="Title_403" xml:space="preserve"><value>Access forbidden</value></data>
+  <data name="Title_404" xml:space="preserve"><value>Resource not found</value></data>
+  <data name="Title_405" xml:space="preserve"><value>Method not allowed</value></data>
+  <data name="Title_409" xml:space="preserve"><value>Conflict</value></data>
+  <data name="Title_415" xml:space="preserve"><value>Unsupported media type</value></data>
+  <data name="Title_423" xml:space="preserve"><value>Account locked</value></data>
+  <data name="Title_429" xml:space="preserve"><value>Too many requests</value></data>
+  <data name="Title_500" xml:space="preserve"><value>Unexpected server error</value></data>
+  <data name="Title_503" xml:space="preserve"><value>Service unavailable</value></data>
+  <data name="Detail_Default" xml:space="preserve"><value>The request could not be processed.</value></data>
+  <data name="Validation_FieldInvalid" xml:space="preserve"><value>The value for this field is invalid.</value></data>
+  <data name="Detail_BAD_REQUEST" xml:space="preserve"><value>The request could not be processed.</value></data>
+  <data name="Detail_VALIDATION_FAILED" xml:space="preserve"><value>One or more request fields are invalid.</value></data>
+  <data name="Detail_MALFORMED_REQUEST" xml:space="preserve"><value>The request body or parameters could not be read.</value></data>
+  <data name="Detail_AUTHENTICATION_REQUIRED" xml:space="preserve"><value>A valid active-session bearer token is required.</value></data>
+  <data name="Detail_AUTHORIZATION_FORBIDDEN" xml:space="preserve"><value>The authenticated account does not have the required permissions.</value></data>
+  <data name="Detail_RESOURCE_NOT_FOUND" xml:space="preserve"><value>The requested resource was not found.</value></data>
+  <data name="Detail_METHOD_NOT_ALLOWED" xml:space="preserve"><value>The HTTP method is not supported for this resource.</value></data>
+  <data name="Detail_CONFLICT" xml:space="preserve"><value>The request conflicts with the current resource state.</value></data>
+  <data name="Detail_UNSUPPORTED_MEDIA_TYPE" xml:space="preserve"><value>The request content type is not supported.</value></data>
+  <data name="Detail_RATE_LIMIT_EXCEEDED" xml:space="preserve"><value>Retry after the indicated delay.</value></data>
+  <data name="Detail_INTERNAL_SERVER_ERROR" xml:space="preserve"><value>An unexpected error occurred while processing the request.</value></data>
+  <data name="Detail_SERVICE_UNAVAILABLE" xml:space="preserve"><value>The requested service is temporarily unavailable.</value></data>
+  <data name="Detail_ACCESS_TOKEN_INVALID" xml:space="preserve"><value>The access token is invalid.</value></data>
+  <data name="Detail_ACCESS_SESSION_INVALID" xml:space="preserve"><value>The authenticated session is no longer valid.</value></data>
+  <data name="Detail_ACCOUNT_LOCKED" xml:space="preserve"><value>The account is temporarily locked.</value></data>
+  <data name="Detail_ACCOUNT_UPDATE_REJECTED" xml:space="preserve"><value>The account update was rejected.</value></data>
+  <data name="Detail_INVALID_CREDENTIALS" xml:space="preserve"><value>The email, user name, or password is incorrect.</value></data>
+  <data name="Detail_LAST_SUPER_ADMIN_REQUIRED" xml:space="preserve"><value>Assign another super administrator before continuing.</value></data>
+  <data name="Detail_OTP_INVALID_OR_EXPIRED" xml:space="preserve"><value>The confirmation code is invalid or expired.</value></data>
+  <data name="Detail_OTP_RESEND_TOO_SOON" xml:space="preserve"><value>Wait before requesting another verification code.</value></data>
+  <data name="Detail_PASSWORD_REUSED" xml:space="preserve"><value>Choose a password that you have not used recently.</value></data>
+  <data name="Detail_GOOGLE_AUTH_NOT_CONFIGURED" xml:space="preserve"><value>Google authentication is not configured.</value></data>
+  <data name="Detail_GOOGLE_ID_TOKEN_INVALID" xml:space="preserve"><value>The Google identity token is invalid.</value></data>
+  <data name="Detail_ACCOUNT_NOT_ACTIVE" xml:space="preserve"><value>The account is not active.</value></data>
+  <data name="Detail_DEVICE_REVOKED" xml:space="preserve"><value>This device has been revoked.</value></data>
+  <data name="Detail_EMAIL_NOT_CONFIRMED" xml:space="preserve"><value>Confirm the email address before signing in.</value></data>
+  <data name="Detail_GOOGLE_ACCOUNT_ALREADY_LINKED" xml:space="preserve"><value>This Google account is already linked.</value></data>
+  <data name="Detail_GOOGLE_ACCOUNT_LINK_FAILED" xml:space="preserve"><value>The Google account could not be linked.</value></data>
+  <data name="Detail_GOOGLE_EMAIL_LINK_REQUIRES_VERIFICATION" xml:space="preserve"><value>Verify the email address before linking this Google account.</value></data>
+  <data name="Detail_GOOGLE_EMAIL_NOT_VERIFIED" xml:space="preserve"><value>The Google email address is not verified.</value></data>
+  <data name="Detail_REFRESH_TOKEN_INVALID" xml:space="preserve"><value>The refresh token is invalid or expired.</value></data>
+  <data name="Detail_REFRESH_TOKEN_REUSE_DETECTED" xml:space="preserve"><value>Refresh-token reuse was detected and the session was revoked.</value></data>
+  <data name="Detail_ROLE_INVALID" xml:space="preserve"><value>The specified role is invalid.</value></data>
+  <data name="Detail_ROLE_REQUIRED" xml:space="preserve"><value>A role is required.</value></data>
+  <data name="Detail_ROLE_UPDATE_REJECTED" xml:space="preserve"><value>The role update was rejected.</value></data>
+  <data name="Detail_USER_NOT_FOUND" xml:space="preserve"><value>The requested user was not found.</value></data>
+  <data name="Detail_FIREBASE_INSTALLATION_INVALID" xml:space="preserve"><value>The Firebase installation ID is invalid.</value></data>
+  <data name="Detail_FIREBASE_INSTALLATION_UNAVAILABLE" xml:space="preserve"><value>This Firebase installation cannot be assigned.</value></data>
+  <data name="Detail_DEVICE_ALREADY_VERIFIED" xml:space="preserve"><value>The current device is already verified.</value></data>
+  <data name="Detail_DEVICE_OR_SESSION_NOT_FOUND" xml:space="preserve"><value>The requested device or session was not found.</value></data>
+  <data name="Detail_PAGINATION_INVALID" xml:space="preserve"><value>Skip must be non-negative and take must be between 1 and 100.</value></data>
+  <data name="Detail_EMAIL_PROVIDER_NOT_CONFIGURED" xml:space="preserve"><value>The identity email provider is not configured.</value></data>
+  <data name="Detail_EMAIL_DELIVERY_FAILED" xml:space="preserve"><value>The identity email could not be delivered. Please try again later.</value></data>
+  <data name="Detail_ACCOUNT_ALREADY_CONFIRMED" xml:space="preserve"><value>The account is already confirmed.</value></data>
+  <data name="Detail_EMAIL_ALREADY_REGISTERED" xml:space="preserve"><value>An account already exists for this email address.</value></data>
+  <data name="Detail_USERNAME_ALREADY_REGISTERED" xml:space="preserve"><value>This user name is already in use.</value></data>
+  <data name="Detail_PENDING_REGISTRATION_NOT_FOUND" xml:space="preserve"><value>No pending registration exists for this email address.</value></data>
+  <data name="Detail_REGISTRATION_NOT_FOUND" xml:space="preserve"><value>The pending registration could not be found.</value></data>
+  <data name="Detail_REGISTRATION_REJECTED" xml:space="preserve"><value>The registration was rejected. Check the supplied account details.</value></data>
+  <data name="Detail_REGISTRATION_CONFIRMATION_FAILED" xml:space="preserve"><value>The account confirmation could not be completed.</value></data>
+  <data name="Detail_ROLE_ASSIGNMENT_FAILED" xml:space="preserve"><value>The default account role could not be assigned.</value></data>
+</root>

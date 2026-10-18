@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="Common_Greeting" xml:space="preserve"><value>Bonjour {0},</value></data>
+  <data name="Common_ChallengeReference" xml:space="preserve"><value>Référence du défi :</value></data>
+  <data name="Common_Expires" xml:space="preserve"><value>Expire le :</value></data>
+  <data name="Common_IdentityFooter" xml:space="preserve"><value>foodiya.app.Identity</value></data>
+  <data name="Common_RecipientFallback" xml:space="preserve"><value>cher utilisateur</value></data>
+  <data name="Common_UnknownDevice" xml:space="preserve"><value>Appareil inconnu</value></data>
+  <data name="Common_UnknownValue" xml:space="preserve"><value>Inconnue</value></data>
+  <data name="Registration_Subject" xml:space="preserve"><value>Confirmez votre compte foodiya.app.Identity</value></data>
+  <data name="Registration_Title" xml:space="preserve"><value>Confirmez votre compte</value></data>
+  <data name="Registration_Message" xml:space="preserve"><value>Utilisez ce code de vérification pour terminer la création de votre compte foodiya.app.Identity.</value></data>
+  <data name="PasswordReset_Subject" xml:space="preserve"><value>Réinitialisez votre mot de passe foodiya.app.Identity</value></data>
+  <data name="PasswordReset_Title" xml:space="preserve"><value>Réinitialisez votre mot de passe</value></data>
+  <data name="PasswordReset_Message" xml:space="preserve"><value>Utilisez ce code de vérification pour réinitialiser votre mot de passe foodiya.app.Identity.</value></data>
+  <data name="Otp_Preheader" xml:space="preserve"><value>Votre code de vérification foodiya.app.Identity est {0}.</value></data>
+  <data name="Otp_CodeLabel" xml:space="preserve"><value>Code de vérification</value></data>
+  <data name="Otp_Safety" xml:space="preserve"><value>Ne partagez jamais ce code. Le support foodiya.app.Identity ne vous le demandera jamais.</value></data>
+  <data name="Otp_Footer" xml:space="preserve"><value>Si vous n’avez pas demandé ce message, vous pouvez l’ignorer.</value></data>
+  <data name="Otp_Text" xml:space="preserve"><value>{0}
+Code de vérification : {1}
+Référence du défi : {2}
+Expire le : {3}
+Si vous n’avez pas demandé ce code, ignorez ce message.</value></data>
+  <data name="Deletion_Subject" xml:space="preserve"><value>Confirmez la suppression de votre compte foodiya.app.Identity</value></data>
+  <data name="Deletion_Title" xml:space="preserve"><value>Confirmez la suppression du compte</value></data>
+  <data name="Deletion_Preheader" xml:space="preserve"><value>Confirmez la suppression de votre compte foodiya.app.Identity.</value></data>
+  <data name="Deletion_Message" xml:space="preserve"><value>Une demande de suppression définitive de votre compte foodiya.app.Identity a été effectuée. Saisissez le code ci-dessous uniquement si vous êtes à l’origine de cette demande.</value></data>
+  <data name="Deletion_Impact" xml:space="preserve"><value>La suppression vous déconnecte de tous les appareils et retire l’accès à votre compte.</value></data>
+  <data name="Deletion_CodeLabel" xml:space="preserve"><value>Code de confirmation de suppression</value></data>
+  <data name="Deletion_Safety" xml:space="preserve"><value>Si vous n’avez pas demandé cette suppression, n’utilisez pas ce code et changez immédiatement votre mot de passe.</value></data>
+  <data name="Deletion_Footer" xml:space="preserve"><value>Notification de sécurité foodiya.app.Identity</value></data>
+  <data name="Device_Subject" xml:space="preserve"><value>Vérifiez un appareil pour votre compte foodiya.app.Identity</value></data>
+  <data name="Device_Title" xml:space="preserve"><value>Vérifiez votre appareil</value></data>
+  <data name="Device_Preheader" xml:space="preserve"><value>Vérifiez un appareil connecté à votre compte foodiya.app.Identity.</value></data>
+  <data name="Device_Message" xml:space="preserve"><value>Utilisez ce code pour vérifier l’appareil connecté à votre compte foodiya.app.Identity.</value></data>
+  <data name="Device_Label" xml:space="preserve"><value>Appareil</value></data>
+  <data name="Device_AppVersion" xml:space="preserve"><value>Version de l’application</value></data>
+  <data name="Device_Connected" xml:space="preserve"><value>Connecté le</value></data>
+  <data name="Device_CodeLabel" xml:space="preserve"><value>Code de vérification de l’appareil</value></data>
+  <data name="Device_Safety" xml:space="preserve"><value>Si vous ne reconnaissez pas cet appareil, n’utilisez pas le code et révoquez la session depuis un appareil de confiance.</value></data>
+  <data name="Device_Footer" xml:space="preserve"><value>Notification de sécurité foodiya.app.Identity</value></data>
+  <data name="Welcome_Subject" xml:space="preserve"><value>Bienvenue sur foodiya.app.Identity</value></data>
+  <data name="Welcome_Text" xml:space="preserve"><value>Bienvenue sur foodiya.app.Identity, {0} ! Votre compte est prêt.</value></data>
+  <data name="Welcome_Preheader" xml:space="preserve"><value>Votre compte foodiya.app.Identity est prêt.</value></data>
+  <data name="Welcome_Label" xml:space="preserve"><value>Bienvenue</value></data>
+  <data name="Welcome_Title" xml:space="preserve"><value>Bonjour {0}, votre compte est prêt.</value></data>
+  <data name="Welcome_Message" xml:space="preserve"><value>Merci d’avoir rejoint foodiya.app.Identity. Vous pouvez maintenant vous connecter, gérer votre profil et utiliser les services foodiya.app.Identity en toute sécurité.</value></data>
+  <data name="Welcome_Security" xml:space="preserve"><value>Pour votre sécurité, gardez votre mot de passe confidentiel et vérifiez les appareils ou sessions inconnus depuis votre compte.</value></data>
+  <data name="Welcome_Footer" xml:space="preserve"><value>Bienvenue sur foodiya.app.Identity.</value></data>
+  <data name="DeletionConfirmation_Subject" xml:space="preserve"><value>Votre compte foodiya.app.Identity a été supprimé</value></data>
+  <data name="DeletionConfirmation_Text" xml:space="preserve"><value>Bonjour {0}, votre compte foodiya.app.Identity a été supprimé. Aucune autre action n’est nécessaire.</value></data>
+  <data name="DeletionConfirmation_Title" xml:space="preserve"><value>Votre compte a été supprimé</value></data>
+  <data name="DeletionConfirmation_Completed" xml:space="preserve"><value>La suppression de votre compte foodiya.app.Identity est terminée.</value></data>
+  <data name="DeletionConfirmation_Sessions" xml:space="preserve"><value>Vos sessions actives et l’accès des appareils connectés ont été révoqués. Aucune autre action n’est nécessaire.</value></data>
+  <data name="DeletionConfirmation_Support" xml:space="preserve"><value>Si vous n’avez pas autorisé cette suppression, contactez le support foodiya.app.Identity depuis l’application officielle.</value></data>
+  <data name="DeletionConfirmation_Footer" xml:space="preserve"><value>Merci d’avoir fait partie de foodiya.app.Identity.</value></data>
+</root>

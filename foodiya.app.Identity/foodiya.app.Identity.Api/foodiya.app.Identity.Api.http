@@ -1,0 +1,199 @@
+@host = http://localhost:5000
+@accessToken = paste-access-token-here
+@accountChallengeId = 00000000-0000-0000-0000-000000000000
+@accountOtp = 000000
+@deviceId = 00000000-0000-0000-0000-000000000000
+@sessionId = 00000000-0000-0000-0000-000000000000
+
+### Register a pending account
+POST {{host}}/api/auth/register
+Content-Type: application/json
+Accept-Language: ar
+
+{
+  "userName": "demo.user",
+  "email": "demo@example.com",
+  "password": "ChangeMe123!",
+  "firstName": "Demo",
+  "lastName": "User",
+  "preferredLanguage": "ar"
+}
+
+### Confirm registration (copy challengeId and the Development log OTP)
+POST {{host}}/api/auth/register/confirm
+Content-Type: application/json
+
+{
+  "challengeId": "00000000-0000-0000-0000-000000000000",
+  "code": "000000"
+}
+
+### Resend registration OTP (after the configured cooldown)
+POST {{host}}/api/auth/register/resend
+Content-Type: application/json
+
+{
+  "email": "demo@example.com"
+}
+
+### Login with an active account
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "login": "demo@example.com",
+  "password": "ChangeMe123!",
+  "deviceInstallationId": "desktop-demo-installation-001",
+  "platform": "windows",
+  "deviceName": "Development PC",
+  "osVersion": "11",
+  "appVersion": "1.0.0"
+}
+
+### Rotate the refresh token (replace the value after every successful call)
+POST {{host}}/api/auth/token/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "paste-the-latest-refresh-token-here"
+}
+
+### Sign in with Google (send the ID token, never a plain Google user ID)
+POST {{host}}/api/auth/google
+Content-Type: application/json
+
+{
+  "idToken": "paste-google-id-token-here",
+  "deviceInstallationId": "desktop-demo-installation-001",
+  "platform": "windows",
+  "deviceName": "Development PC",
+  "osVersion": "11",
+  "appVersion": "1.0.0"
+}
+
+### Get the current account and session
+GET {{host}}/api/users/me
+Authorization: Bearer {{accessToken}}
+
+### List supported roles (ADMIN or SUPER_ADMIN)
+GET {{host}}/api/admin/roles
+Authorization: Bearer {{accessToken}}
+
+### Get an account's roles (ADMIN or SUPER_ADMIN)
+GET {{host}}/api/admin/users/00000000-0000-0000-0000-000000000000/roles
+Authorization: Bearer {{accessToken}}
+
+### Replace account roles (SUPER_ADMIN only; revokes target sessions)
+PUT {{host}}/api/admin/users/00000000-0000-0000-0000-000000000000/roles
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "roles": ["USER", "CHEF"]
+}
+
+### Request recovery (same 202 response for unknown/ineligible accounts)
+POST {{host}}/api/auth/password/forgot
+Content-Type: application/json
+
+{
+  "email": "demo@example.com"
+}
+
+### Reset password (copy challenge ID and code from the Development email log)
+POST {{host}}/api/auth/password/reset
+Content-Type: application/json
+
+{
+  "challengeId": "{{accountChallengeId}}",
+  "code": "{{accountOtp}}",
+  "newPassword": "NewUniquePassword456!"
+}
+
+### Change password (sign in again after success)
+POST {{host}}/api/auth/password/change
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "currentPassword": "ChangeMe123!",
+  "newPassword": "NewUniquePassword456!"
+}
+
+### Logout current session (its bearer token becomes invalid)
+POST {{host}}/api/auth/logout
+Authorization: Bearer {{accessToken}}
+
+### Logout all sessions (sign in again to obtain a usable bearer token)
+POST {{host}}/api/auth/logout-all
+Authorization: Bearer {{accessToken}}
+
+### Request deletion of the current account (requires password and email confirmation)
+POST {{host}}/api/users/me/deletion/request
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "currentPassword": "NewUniquePassword456!"
+}
+
+### Confirm deletion (copy the deletion challenge ID and OTP)
+POST {{host}}/api/users/me/deletion/confirm
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "challengeId": "{{accountChallengeId}}",
+  "code": "{{accountOtp}}"
+}
+
+### Invalid recovery input (400 before querying storage)
+POST {{host}}/api/auth/password/forgot
+Content-Type: application/json
+
+{
+  "email": "invalid-email"
+}
+
+### List own devices (take 1-100)
+GET {{host}}/api/users/me/devices?skip=0&take=25
+Authorization: Bearer {{accessToken}}
+
+### List own sessions
+GET {{host}}/api/users/me/sessions?skip=0&take=25
+Authorization: Bearer {{accessToken}}
+
+### Revoke a device and all its sessions (unknown/foreign ID returns 404)
+POST {{host}}/api/users/me/devices/{{deviceId}}/revoke
+Authorization: Bearer {{accessToken}}
+
+### Revoke one session
+POST {{host}}/api/users/me/sessions/{{sessionId}}/revoke
+Authorization: Bearer {{accessToken}}
+
+### Email a verification code for this device
+POST {{host}}/api/users/me/devices/current/verification/request
+Authorization: Bearer {{accessToken}}
+
+### Confirm with the device challenge ID and OTP from email/Development log
+POST {{host}}/api/users/me/devices/current/verification/confirm
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "challengeId": "{{accountChallengeId}}",
+  "code": "{{accountOtp}}"
+}
+
+### Register the current Firebase installation for push notifications
+PUT {{host}}/api/users/me/devices/current/push-registration
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "firebaseInstallationId": "firebase-installation-id"
+}
+
+### Clear the Firebase installation before switching accounts on a shared device
+DELETE {{host}}/api/users/me/devices/current/push-registration
+Authorization: Bearer {{accessToken}}

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="Common_Greeting" xml:space="preserve"><value>مرحبًا {0}،</value></data>
+  <data name="Common_ChallengeReference" xml:space="preserve"><value>مرجع التحقق:</value></data>
+  <data name="Common_Expires" xml:space="preserve"><value>تنتهي الصلاحية في:</value></data>
+  <data name="Common_IdentityFooter" xml:space="preserve"><value>foodiya.app.Identity</value></data>
+  <data name="Common_RecipientFallback" xml:space="preserve"><value>عزيزي المستخدم</value></data>
+  <data name="Common_UnknownDevice" xml:space="preserve"><value>جهاز غير معروف</value></data>
+  <data name="Common_UnknownValue" xml:space="preserve"><value>غير معروف</value></data>
+  <data name="Registration_Subject" xml:space="preserve"><value>أكّد حسابك في foodiya.app.Identity</value></data>
+  <data name="Registration_Title" xml:space="preserve"><value>تأكيد حسابك</value></data>
+  <data name="Registration_Message" xml:space="preserve"><value>استخدم رمز التحقق هذا لإكمال إنشاء حسابك في foodiya.app.Identity.</value></data>
+  <data name="PasswordReset_Subject" xml:space="preserve"><value>إعادة تعيين كلمة مرور foodiya.app.Identity</value></data>
+  <data name="PasswordReset_Title" xml:space="preserve"><value>إعادة تعيين كلمة المرور</value></data>
+  <data name="PasswordReset_Message" xml:space="preserve"><value>استخدم رمز التحقق هذا لإعادة تعيين كلمة مرور حسابك في foodiya.app.Identity.</value></data>
+  <data name="Otp_Preheader" xml:space="preserve"><value>رمز التحقق الخاص بك في foodiya.app.Identity هو {0}.</value></data>
+  <data name="Otp_CodeLabel" xml:space="preserve"><value>رمز التحقق</value></data>
+  <data name="Otp_Safety" xml:space="preserve"><value>لا تشارك هذا الرمز أبدًا. لن يطلب منك فريق دعم foodiya.app.Identity هذا الرمز.</value></data>
+  <data name="Otp_Footer" xml:space="preserve"><value>إذا لم تطلب هذه الرسالة، يمكنك تجاهلها بأمان.</value></data>
+  <data name="Otp_Text" xml:space="preserve"><value>{0}
+رمز التحقق: {1}
+مرجع التحقق: {2}
+تنتهي الصلاحية في: {3}
+إذا لم تطلب هذا الرمز، فتجاهل هذه الرسالة.</value></data>
+  <data name="Deletion_Subject" xml:space="preserve"><value>تأكيد حذف حسابك في foodiya.app.Identity</value></data>
+  <data name="Deletion_Title" xml:space="preserve"><value>تأكيد حذف الحساب</value></data>
+  <data name="Deletion_Preheader" xml:space="preserve"><value>أكّد حذف حسابك في foodiya.app.Identity.</value></data>
+  <data name="Deletion_Message" xml:space="preserve"><value>تم تقديم طلب لحذف حسابك في foodiya.app.Identity نهائيًا. أدخل الرمز أدناه فقط إذا كنت أنت من بدأ هذا الطلب.</value></data>
+  <data name="Deletion_Impact" xml:space="preserve"><value>سيؤدي الحذف إلى تسجيل خروجك من جميع الأجهزة وإزالة إمكانية الوصول إلى حسابك.</value></data>
+  <data name="Deletion_CodeLabel" xml:space="preserve"><value>رمز تأكيد الحذف</value></data>
+  <data name="Deletion_Safety" xml:space="preserve"><value>إذا لم تطلب حذف الحساب، فلا تستخدم هذا الرمز وغيّر كلمة المرور فورًا.</value></data>
+  <data name="Deletion_Footer" xml:space="preserve"><value>إشعار أمان من foodiya.app.Identity</value></data>
+  <data name="Device_Subject" xml:space="preserve"><value>التحقق من جهاز مرتبط بحسابك في foodiya.app.Identity</value></data>
+  <data name="Device_Title" xml:space="preserve"><value>التحقق من جهازك</value></data>
+  <data name="Device_Preheader" xml:space="preserve"><value>تحقق من جهاز متصل بحسابك في foodiya.app.Identity.</value></data>
+  <data name="Device_Message" xml:space="preserve"><value>استخدم هذا الرمز للتحقق من الجهاز المتصل بحسابك في foodiya.app.Identity.</value></data>
+  <data name="Device_Label" xml:space="preserve"><value>الجهاز</value></data>
+  <data name="Device_AppVersion" xml:space="preserve"><value>إصدار التطبيق</value></data>
+  <data name="Device_Connected" xml:space="preserve"><value>وقت الاتصال</value></data>
+  <data name="Device_CodeLabel" xml:space="preserve"><value>رمز التحقق من الجهاز</value></data>
+  <data name="Device_Safety" xml:space="preserve"><value>إذا لم تتعرف على هذا الجهاز، فلا تستخدم الرمز وألغِ الجلسة من جهاز موثوق.</value></data>
+  <data name="Device_Footer" xml:space="preserve"><value>إشعار أمان من foodiya.app.Identity</value></data>
+  <data name="Welcome_Subject" xml:space="preserve"><value>مرحبًا بك في foodiya.app.Identity</value></data>
+  <data name="Welcome_Text" xml:space="preserve"><value>مرحبًا بك في foodiya.app.Identity، {0}! حسابك جاهز.</value></data>
+  <data name="Welcome_Preheader" xml:space="preserve"><value>حسابك في foodiya.app.Identity جاهز.</value></data>
+  <data name="Welcome_Label" xml:space="preserve"><value>مرحبًا بك</value></data>
+  <data name="Welcome_Title" xml:space="preserve"><value>مرحبًا {0}، حسابك جاهز.</value></data>
+  <data name="Welcome_Message" xml:space="preserve"><value>شكرًا لانضمامك إلى foodiya.app.Identity. يمكنك الآن تسجيل الدخول وإدارة ملفك الشخصي واستخدام خدمات foodiya.app.Identity بأمان.</value></data>
+  <data name="Welcome_Security" xml:space="preserve"><value>لحماية حسابك، احتفظ بكلمة المرور سرية وراجع الأجهزة أو الجلسات غير المألوفة من حسابك.</value></data>
+  <data name="Welcome_Footer" xml:space="preserve"><value>مرحبًا بك في foodiya.app.Identity.</value></data>
+  <data name="DeletionConfirmation_Subject" xml:space="preserve"><value>تم حذف حسابك في foodiya.app.Identity</value></data>
+  <data name="DeletionConfirmation_Text" xml:space="preserve"><value>مرحبًا {0}، تم حذف حسابك في foodiya.app.Identity ولا يلزم اتخاذ أي إجراء آخر.</value></data>
+  <data name="DeletionConfirmation_Title" xml:space="preserve"><value>تم حذف حسابك</value></data>
+  <data name="DeletionConfirmation_Completed" xml:space="preserve"><value>اكتملت عملية حذف حسابك في foodiya.app.Identity.</value></data>
+  <data name="DeletionConfirmation_Sessions" xml:space="preserve"><value>تم إلغاء جلساتك النشطة ووصول الأجهزة المتصلة. لا يلزم اتخاذ أي إجراء آخر.</value></data>
+  <data name="DeletionConfirmation_Support" xml:space="preserve"><value>إذا لم تسمح بهذا الحذف، فتواصل مع دعم foodiya.app.Identity عبر التطبيق الرسمي.</value></data>
+  <data name="DeletionConfirmation_Footer" xml:space="preserve"><value>شكرًا لكونك جزءًا من foodiya.app.Identity.</value></data>
+</root>

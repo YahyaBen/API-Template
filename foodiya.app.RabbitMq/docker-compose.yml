@@ -1,0 +1,35 @@
+name: foodiya-messaging
+
+services:
+  rabbitmq:
+    image: rabbitmq:4.3.6-management
+    hostname: foodiya-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RabbitMq__UserName:?Run scripts/New-LocalSecrets.ps1 first}
+      RABBITMQ_DEFAULT_PASS: ${RabbitMq__Password:?Run scripts/New-LocalSecrets.ps1 first}
+      RABBITMQ_DEFAULT_VHOST: ${RabbitMq__VirtualHost:-foodiya}
+    ports:
+      - "127.0.0.1:${RabbitMq__Port:-5673}:5672"
+      - "127.0.0.1:${RABBITMQ_MANAGEMENT_PORT:-15673}:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      messaging:
+        aliases:
+          - rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    restart: unless-stopped
+    stop_grace_period: 30s
+
+volumes:
+  rabbitmq_data:
+    name: foodiya_rabbitmq_data
+
+networks:
+  messaging:
+    name: foodiya-messaging

@@ -1,0 +1,34 @@
+name: Build and test
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+      - name: Restore
+        run: dotnet restore API-Template.slnx
+      - name: Build
+        run: dotnet build API-Template.slnx --configuration Release --no-restore
+      - name: Test without external dependencies
+        run: >-
+          dotnet test --solution API-Template.slnx --configuration Release --no-build
+          --filter "TestCategory!=RabbitMQ&TestCategory!=SqlServer"
+      - name: Publish Foodiya API
+        run: >-
+          dotnet publish Foodiya.API/Foodiya.API.csproj --configuration Release
+          --no-build --no-restore --output artifacts/publish/api
+      - name: Publish Identity API
+        run: >-
+          dotnet publish foodiya.app.Identity/foodiya.app.Identity.Api/foodiya.app.Identity.Api.csproj
+          --configuration Release --no-build --no-restore
+          --output artifacts/publish/identity

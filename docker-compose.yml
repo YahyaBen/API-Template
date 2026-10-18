@@ -1,0 +1,13 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: ${DEFAULT_CONNECTION:?DEFAULT_CONNECTION is required}
+      Authentication__Jwt__Authority: ${IDENTITY_AUTHORITY:-https://identity.foodiya.app}
+      Authentication__Jwt__Issuer: ${IDENTITY_ISSUER:-https://identity.foodiya.app}
+      Authentication__Jwt__Audience: ${IDENTITY_AUDIENCE:-foodiya.app.Identity.Clients}

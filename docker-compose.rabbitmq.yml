@@ -1,0 +1,17 @@
+# Apply the Identity inbox, email and Unicode-name SQL migrations before enabling.
+services:
+  api:
+    env_file:
+      - ./foodiya.app.RabbitMq/.env
+    environment:
+      IdentityEvents__Enabled: "true"
+      RabbitMq__HostName: rabbitmq
+      RabbitMq__Port: "5672"
+    networks:
+      - default
+      - messaging
+
+networks:
+  messaging:
+    name: foodiya-messaging
+    external: true

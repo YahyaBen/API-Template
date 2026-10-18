@@ -1,0 +1,18 @@
+<Project Sdk="MSTest.Sdk">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <MSTestAnalysisMode>Recommended</MSTestAnalysisMode>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+    <ProjectReference Include="../../../Foodiya.API/Foodiya.API.csproj" Aliases="FoodiyaApi" />
+    <ProjectReference Include="../../foodiya.app.Identity.Api/foodiya.app.Identity.Api.csproj" />
+    <ProjectReference Include="../../foodiya.app.Identity.Infrastructure/foodiya.app.Identity.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="../../../foodrecipe.SqlServer/Migration_AppUserEmail256.sql" Link="Sql/Migration_AppUserEmail256.sql" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../../foodrecipe.SqlServer/Migration_IdentityProfileUnicodeNames.sql" Link="Sql/Migration_IdentityProfileUnicodeNames.sql" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>
