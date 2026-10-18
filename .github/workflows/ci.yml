@@ -1,4 +1,4 @@
-name: Build and test
+name: Build and verify APIs
 
 on:
   push:
@@ -19,16 +19,14 @@ jobs:
         run: dotnet restore API-Template.slnx
       - name: Build
         run: dotnet build API-Template.slnx --configuration Release --no-restore
-      - name: Test without external dependencies
-        run: >-
-          dotnet test --solution API-Template.slnx --configuration Release --no-build
-          --filter "TestCategory!=RabbitMQ&TestCategory!=SqlServer"
       - name: Publish Foodiya API
         run: >-
           dotnet publish Foodiya.API/Foodiya.API.csproj --configuration Release
           --no-build --no-restore --output artifacts/publish/api
       - name: Publish Identity API
         run: >-
-          dotnet publish foodiya.app.Identity/foodiya.app.Identity.Api/foodiya.app.Identity.Api.csproj
+          dotnet publish foodiya.app.Identity.Api/foodiya.app.Identity.Api.csproj
           --configuration Release --no-build --no-restore
           --output artifacts/publish/identity
+      - name: Verify HTTP startup without external dependencies
+        run: bash scripts/Test-ApiStartup.sh

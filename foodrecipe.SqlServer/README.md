@@ -2,7 +2,7 @@
 
 These SQL scripts belong to the Foodiya business database. Identity has a
 separate database managed by EF Core migrations in
-`../foodiya.app.Identity/foodiya.app.Identity.Infrastructure/Persistence/Migrations/`.
+`../foodiya.app.Identity.Api/Infrastructure/Persistence/Migrations/`.
 
 Create an empty Foodiya SQL Server or Azure SQL database. Review and execute the
 following scripts against that target with SSMS, Azure's query editor, or

@@ -1,9 +1,0 @@
-**/bin/
-**/obj/
-.vs/
-.idea/
-TestResults/
-artifacts/
-.env
-secrets/
-*.binlog

@@ -1,0 +1,83 @@
+name: foodiya-app-identity
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Developer
+      MSSQL_SA_PASSWORD: ${SQL_SERVER_SA_PASSWORD:?Run scripts/New-LocalSecrets.ps1 first}
+    ports:
+      - "14333:1433"
+    volumes:
+      - foodiya_app_identity_sql_data:/var/opt/mssql
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$$MSSQL_SA_PASSWORD" -C -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    restart: unless-stopped
+
+  migrations:
+    build:
+      context: ..
+      dockerfile: foodiya.app.Identity.Api/Dockerfile
+      target: migrations
+    env_file:
+      - .env
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__IdentityDatabase: Server=sqlserver,1433;Database=FOODIYA_APP_IDENTITY;User ID=sa;Password=${SQL_SERVER_SA_PASSWORD};Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True
+    command:
+      - database
+      - update
+      - --project
+      - foodiya.app.Identity.Api/foodiya.app.Identity.Api.csproj
+      - --startup-project
+      - foodiya.app.Identity.Api/foodiya.app.Identity.Api.csproj
+      - --configuration
+      - Release
+      - --no-build
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    build:
+      context: ..
+      dockerfile: foodiya.app.Identity.Api/Dockerfile
+      target: final
+    env_file:
+      - .env
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__IdentityDatabase: Server=sqlserver,1433;Database=FOODIYA_APP_IDENTITY;User ID=sa;Password=${SQL_SERVER_SA_PASSWORD};Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True
+      Tokens__Issuer: ${IDENTITY_ISSUER:-https://identity.foodiya.app}
+      Tokens__Audience: foodiya.app.Identity.Clients
+      Tokens__RsaPrivateKeyPath: /run/secrets/jwt-private-key.pem
+    ports:
+      - "8080:8080"
+    volumes:
+      - foodiya_app_identity_data_protection:/home/app/.aspnet/DataProtection-Keys
+    secrets:
+      - source: jwt_private_key
+        target: jwt-private-key.pem
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+volumes:
+  foodiya_app_identity_sql_data:
+    name: foodiya_app_identity_sql_data
+  foodiya_app_identity_data_protection:
+    name: foodiya_app_identity_data_protection
+
+secrets:
+  jwt_private_key:
+    file: ./secrets/jwt-private-key.pem

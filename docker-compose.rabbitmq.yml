@@ -2,7 +2,7 @@
 services:
   api:
     env_file:
-      - ./foodiya.app.RabbitMq/.env
+      - ./deployment/rabbitmq/.env
     environment:
       IdentityEvents__Enabled: "true"
       RabbitMq__HostName: rabbitmq

@@ -73,7 +73,7 @@ $apiEnvironment = @{
     IdentityEvents__Enabled='false'
 }
 
-$identityProcess = Start-Process -FilePath $dotnetPath -ArgumentList @('run','--project','foodiya.app.Identity/foodiya.app.Identity.Api','--configuration','Release','--no-build','--no-launch-profile','--urls',$IdentityUrl) -WorkingDirectory $repositoryRoot -WindowStyle Hidden -Environment $identityEnvironment -RedirectStandardOutput $identityStdout -RedirectStandardError $identityStderr -PassThru
+$identityProcess = Start-Process -FilePath $dotnetPath -ArgumentList @('run','--project','foodiya.app.Identity.Api','--configuration','Release','--no-build','--no-launch-profile','--urls',$IdentityUrl) -WorkingDirectory $repositoryRoot -WindowStyle Hidden -Environment $identityEnvironment -RedirectStandardOutput $identityStdout -RedirectStandardError $identityStderr -PassThru
 $apiProcess = Start-Process -FilePath $dotnetPath -ArgumentList @('run','--project','Foodiya.API','--configuration','Release','--no-build','--no-launch-profile','--urls',$ApiUrl) -WorkingDirectory $repositoryRoot -WindowStyle Hidden -Environment $apiEnvironment -RedirectStandardOutput $apiStdout -RedirectStandardError $apiStderr -PassThru
 [ordered]@{
     StartedAtUtc=[DateTime]::UtcNow.ToString('o')

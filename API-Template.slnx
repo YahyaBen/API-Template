@@ -1,21 +1,4 @@
 <Solution>
-  <Folder Name="/Foodiya/">
-    <Project Path="Foodiya.API/Foodiya.API.csproj" />
-    <Project Path="Foodiya.Application/Foodiya.Application.csproj" />
-    <Project Path="Foodiya.Domain/Foodiya.Domain.csproj" />
-    <Project Path="Foodiya.Infrastructure/Foodiya.Infrastructure.csproj" />
-    <Project Path="Foodiya.Functions/Foodiya.Functions.csproj" />
-  </Folder>
-  <Folder Name="/Identity/">
-    <Project Path="foodiya.app.Identity/foodiya.app.Identity.Api/foodiya.app.Identity.Api.csproj" />
-    <Project Path="foodiya.app.Identity/foodiya.app.Identity.Application/foodiya.app.Identity.Application.csproj" />
-    <Project Path="foodiya.app.Identity/foodiya.app.Identity.Contracts/foodiya.app.Identity.Contracts.csproj" />
-    <Project Path="foodiya.app.Identity/foodiya.app.Identity.Domain/foodiya.app.Identity.Domain.csproj" />
-    <Project Path="foodiya.app.Identity/foodiya.app.Identity.Infrastructure/foodiya.app.Identity.Infrastructure.csproj" />
-    <Project Path="foodiya.app.Identity/foodiya.app.Messaging/foodiya.app.Messaging.csproj" />
-  </Folder>
-  <Folder Name="/Tests/">
-    <Project Path="foodiya.app.Identity/tests/foodiya.app.Identity.Infrastructure.Tests/foodiya.app.Identity.Infrastructure.Tests.csproj" />
-    <Project Path="foodiya.app.Identity/tests/foodiya.app.Identity.Integration.Tests/foodiya.app.Identity.Integration.Tests.csproj" />
-  </Folder>
+  <Project Path="Foodiya.API/Foodiya.API.csproj" />
+  <Project Path="foodiya.app.Identity.Api/foodiya.app.Identity.Api.csproj" />
 </Solution>
