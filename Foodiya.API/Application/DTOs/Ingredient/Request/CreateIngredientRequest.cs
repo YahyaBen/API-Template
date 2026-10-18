@@ -19,7 +19,7 @@ public sealed class CreateIngredientRequest
     [JsonIgnore]
     public int? DefaultUnitId { get; set; }
 
-    [Range(typeof(decimal), "0", "99999999.99")]
+    [Range(typeof(decimal), "0", "99999999.99", ParseLimitsInInvariantCulture = true, ConvertValueInInvariantCulture = true)]
     public decimal? CaloriesPer100g { get; set; }
 
     public bool IsActive { get; set; } = true;

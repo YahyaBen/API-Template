@@ -1,7 +1,8 @@
 [CmdletBinding()]
 param(
     [string]$IdentityUrl = 'http://localhost:5000',
-    [string]$ApiUrl = 'http://localhost:5135'
+    [string]$ApiUrl = 'http://localhost:5135',
+    [string]$IdentityLogPath
 )
 
 $ErrorActionPreference = 'Stop'
@@ -15,10 +16,12 @@ foreach ($url in @($IdentityUrl, $ApiUrl)) {
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $runDirectory = Join-Path $repositoryRoot 'artifacts/local-run'
 $processStatePath = Join-Path $runDirectory 'processes.json'
-if (-not (Test-Path -LiteralPath $processStatePath)) {
+if (-not $IdentityLogPath -and -not (Test-Path -LiteralPath $processStatePath)) {
     throw 'Start the local APIs with scripts/Start-LocalApis.ps1 first.'
 }
-$processState = Get-Content -LiteralPath $processStatePath -Raw | ConvertFrom-Json
+if (-not $IdentityLogPath) {
+    $IdentityLogPath = (Get-Content -LiteralPath $processStatePath -Raw | ConvertFrom-Json).IdentityStdout
+}
 $script:checks = [Collections.Generic.List[object]]::new()
 
 function Invoke-CheckedRequest {
@@ -90,7 +93,7 @@ $registration = Invoke-CheckedRequest -Name 'Register test account' -Uri "$Ident
 $otp = $null
 $otpPattern = 'Development registration OTP for ' + [regex]::Escape($email) + ': (?<code>\d{6})\.'
 for ($attempt=0; $attempt -lt 20 -and -not $otp; $attempt++) {
-    $logStream = [IO.FileStream]::new($processState.IdentityStdout,
+    $logStream = [IO.FileStream]::new($IdentityLogPath,
         [IO.FileMode]::Open, [IO.FileAccess]::Read, [IO.FileShare]::ReadWrite)
     $logReader = [IO.StreamReader]::new($logStream)
     try { $localLog = $logReader.ReadToEnd() }

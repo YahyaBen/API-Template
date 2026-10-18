@@ -13,6 +13,7 @@ namespace Foodiya.Application.Services;
 
 public sealed class RecipeShareService : IRecipeShareService
 {
+    private readonly IResourceAuthorization _authorization;
     private readonly IRecipeShareRepository _recipeShareRepo;
     private readonly IGenericRepository<Recipe> _recipeRepo;
     private readonly IGenericRepository<AppUser> _userRepo;
@@ -20,12 +21,14 @@ public sealed class RecipeShareService : IRecipeShareService
     private readonly IRecipeShareFactory _factory;
 
     public RecipeShareService(
+        IResourceAuthorization authorization,
         IRecipeShareRepository recipeShareRepo,
         IGenericRepository<Recipe> recipeRepo,
         IGenericRepository<AppUser> userRepo,
         IMapper mapper,
         IRecipeShareFactory factory)
     {
+        _authorization = authorization;
         _recipeShareRepo = recipeShareRepo;
         _recipeRepo = recipeRepo;
         _userRepo = userRepo;
@@ -73,7 +76,7 @@ public sealed class RecipeShareService : IRecipeShareService
     public async Task<RecipeShareDetailResponse> CreateAsync(CreateRecipeShareRequest request, CancellationToken ct = default)
     {
         request.RecipeId = (await _recipeRepo.GetRequiredByUuidAsync(request.RecipeUuid, nameof(Recipe), ct)).Id;
-        request.SharedByUserId = (await _userRepo.GetRequiredByUuidAsync(request.SharedByUserUuid, nameof(AppUser), ct)).Id;
+        request.SharedByUserId = await _authorization.GetActorIdAsync(request.SharedByUserUuid, ct);
         await EnsureRecipeExistsAsync(request.RecipeId, ct);
         await EnsureUserExistsAsync(request.SharedByUserId, "SharedByUser", ct);
 
@@ -91,6 +94,7 @@ public sealed class RecipeShareService : IRecipeShareService
     public async Task<RecipeShareDetailResponse> UpdateAsync(Guid uuid, UpdateRecipeShareRequest request, CancellationToken ct = default)
     {
         var recipeShare = await _recipeShareRepo.GetRequiredByUuidAsync(uuid, nameof(RecipeShare), ct);
+        await _authorization.RequireShareOwnerAsync(recipeShare, ct);
 
         if (!request.ClearSharedWithUser && request.SharedWithUserUuid.HasValue)
             request.SharedWithUserId = (await _userRepo.GetRequiredByUuidAsync(request.SharedWithUserUuid.Value, nameof(AppUser), ct)).Id;
@@ -106,6 +110,7 @@ public sealed class RecipeShareService : IRecipeShareService
     public async Task DeleteAsync(Guid uuid, CancellationToken ct = default)
     {
         var recipeShare = await _recipeShareRepo.GetRequiredByUuidAsync(uuid, nameof(RecipeShare), ct);
+        await _authorization.RequireShareOwnerAsync(recipeShare, ct);
 
         _recipeShareRepo.Delete(recipeShare);
         await _recipeShareRepo.SaveAsync(ct);

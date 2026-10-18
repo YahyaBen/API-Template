@@ -13,17 +13,20 @@ namespace Foodiya.Application.Services;
 
 public sealed class RecipeNutritionService : IRecipeNutritionService
 {
+    private readonly IResourceAuthorization _authorization;
     private readonly IRecipeNutritionRepository _recipeNutritionRepo;
     private readonly IGenericRepository<Recipe> _recipeRepo;
     private readonly IMapper _mapper;
     private readonly IRecipeNutritionFactory _factory;
 
     public RecipeNutritionService(
+        IResourceAuthorization authorization,
         IRecipeNutritionRepository recipeNutritionRepo,
         IGenericRepository<Recipe> recipeRepo,
         IMapper mapper,
         IRecipeNutritionFactory factory)
     {
+        _authorization = authorization;
         _recipeNutritionRepo = recipeNutritionRepo;
         _recipeRepo = recipeRepo;
         _mapper = mapper;
@@ -66,6 +69,7 @@ public sealed class RecipeNutritionService : IRecipeNutritionService
     public async Task<RecipeNutritionDetailResponse> CreateAsync(CreateRecipeNutritionRequest request, CancellationToken ct = default)
     {
         request.RecipeId = (await _recipeRepo.GetRequiredByUuidAsync(request.RecipeUuid, nameof(Recipe), ct)).Id;
+        await _authorization.RequireRecipeOwnerAsync(request.RecipeId, ct);
         await EnsureRecipeExistsAsync(request.RecipeId, ct);
 
         var existing = await _recipeNutritionRepo.GetByIdAsync(request.RecipeId, ct: ct);
@@ -86,6 +90,7 @@ public sealed class RecipeNutritionService : IRecipeNutritionService
         var recipeNutrition = await _recipeNutritionRepo.GetByIdAsync(recipeId, ct: ct)
             ?? throw new FoodiyaNotFoundException($"RecipeNutrition for Recipe UUID {recipeUuid} not found.");
 
+        await _authorization.RequireRecipeOwnerAsync(recipeId, ct);
         await EnsureRecipeExistsAsync(recipeId, ct);
 
         _factory.Update(recipeNutrition, request);
@@ -102,6 +107,7 @@ public sealed class RecipeNutritionService : IRecipeNutritionService
         var recipeNutrition = await _recipeNutritionRepo.GetByIdAsync(recipeId, ct: ct)
             ?? throw new FoodiyaNotFoundException($"RecipeNutrition for Recipe UUID {recipeUuid} not found.");
 
+        await _authorization.RequireRecipeOwnerAsync(recipeNutrition.RecipeId, ct);
         _recipeNutritionRepo.Delete(recipeNutrition);
         await _recipeNutritionRepo.SaveAsync(ct);
     }

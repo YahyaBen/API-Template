@@ -11,15 +11,15 @@ public sealed class CreateRecipeNutritionRequest
     [JsonIgnore]
     public int RecipeId { get; set; }
 
-    [Range(typeof(decimal), "0", "99999999.99")]
+    [Range(typeof(decimal), "0", "99999999.99", ParseLimitsInInvariantCulture = true, ConvertValueInInvariantCulture = true)]
     public decimal CaloriesPerServing { get; set; }
 
-    [Range(typeof(decimal), "0", "99999999.99")]
+    [Range(typeof(decimal), "0", "99999999.99", ParseLimitsInInvariantCulture = true, ConvertValueInInvariantCulture = true)]
     public decimal? ProteinGrams { get; set; }
 
-    [Range(typeof(decimal), "0", "99999999.99")]
+    [Range(typeof(decimal), "0", "99999999.99", ParseLimitsInInvariantCulture = true, ConvertValueInInvariantCulture = true)]
     public decimal? CarbsGrams { get; set; }
 
-    [Range(typeof(decimal), "0", "99999999.99")]
+    [Range(typeof(decimal), "0", "99999999.99", ParseLimitsInInvariantCulture = true, ConvertValueInInvariantCulture = true)]
     public decimal? FatGrams { get; set; }
 }

@@ -13,6 +13,7 @@ namespace Foodiya.Application.Services;
 
 public sealed class RecipeIngredientService : IRecipeIngredientService
 {
+    private readonly IResourceAuthorization _authorization;
     private readonly IRecipeIngredientRepository _recipeIngredientRepo;
     private readonly IGenericRepository<Recipe> _recipeRepo;
     private readonly IGenericRepository<Ingredient> _ingredientRepo;
@@ -21,6 +22,7 @@ public sealed class RecipeIngredientService : IRecipeIngredientService
     private readonly IRecipeIngredientFactory _factory;
 
     public RecipeIngredientService(
+        IResourceAuthorization authorization,
         IRecipeIngredientRepository recipeIngredientRepo,
         IGenericRepository<Recipe> recipeRepo,
         IGenericRepository<Ingredient> ingredientRepo,
@@ -28,6 +30,7 @@ public sealed class RecipeIngredientService : IRecipeIngredientService
         IMapper mapper,
         IRecipeIngredientFactory factory)
     {
+        _authorization = authorization;
         _recipeIngredientRepo = recipeIngredientRepo;
         _recipeRepo = recipeRepo;
         _ingredientRepo = ingredientRepo;
@@ -77,6 +80,7 @@ public sealed class RecipeIngredientService : IRecipeIngredientService
     {
         request.RecipeId = (await _recipeRepo.GetRequiredByUuidAsync(request.RecipeUuid, nameof(Recipe), ct)).Id;
         request.IngredientId = (await _ingredientRepo.GetRequiredByUuidAsync(request.IngredientUuid, nameof(Ingredient), ct)).Id;
+        await _authorization.RequireRecipeOwnerAsync(request.RecipeId, ct);
         await EnsureRecipeExistsAsync(request.RecipeId, ct);
         await EnsureIngredientExistsAsync(request.IngredientId, ct);
 
@@ -99,6 +103,7 @@ public sealed class RecipeIngredientService : IRecipeIngredientService
     {
         var recipeIngredient = await _recipeIngredientRepo.GetRequiredByUuidAsync(uuid, nameof(RecipeIngredient), ct);
 
+        await _authorization.RequireRecipeOwnerAsync(recipeIngredient.RecipeId, ct);
         await EnsureRecipeExistsAsync(recipeIngredient.RecipeId, ct);
         await EnsureIngredientExistsAsync(recipeIngredient.IngredientId, ct);
 
@@ -117,6 +122,7 @@ public sealed class RecipeIngredientService : IRecipeIngredientService
     {
         var recipeIngredient = await _recipeIngredientRepo.GetRequiredByUuidAsync(uuid, nameof(RecipeIngredient), ct);
 
+        await _authorization.RequireRecipeOwnerAsync(recipeIngredient.RecipeId, ct);
         _recipeIngredientRepo.Delete(recipeIngredient);
         await _recipeIngredientRepo.SaveAsync(ct);
     }

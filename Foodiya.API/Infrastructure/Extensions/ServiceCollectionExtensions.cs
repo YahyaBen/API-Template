@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using foodiya.app.Messaging;
 using Foodiya.Infrastructure.Messaging;
 using Foodiya.Infrastructure.Identity;
+using Foodiya.Application.Interfaces.Services;
 
 namespace Foodiya.Infrastructure.Extensions
 {
@@ -16,6 +17,9 @@ namespace Foodiya.Infrastructure.Extensions
             services.AddSingleton<IDateTimeProvider, SystemDateTimeProvider>();
             services.AddSingleton(TimeProvider.System);
             services.AddScoped<IdentityProfileProvisioner>();
+            services.AddHttpContextAccessor();
+            services.AddScoped<ICurrentUser, HttpCurrentUser>();
+            services.AddScoped<IResourceAuthorization, ResourceAuthorization>();
             services.AddRepositories(configuration, isDevelopment);
             services.AddHealthChecks();
             services.AddOptions<IdentityEventsOptions>()

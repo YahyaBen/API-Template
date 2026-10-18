@@ -4,16 +4,16 @@ namespace Foodiya.Application.DTOs.RecipeNutrition.Request;
 
 public sealed class UpdateRecipeNutritionRequest
 {
-    [Range(typeof(decimal), "0", "99999999.99")]
+    [Range(typeof(decimal), "0", "99999999.99", ParseLimitsInInvariantCulture = true, ConvertValueInInvariantCulture = true)]
     public decimal? CaloriesPerServing { get; set; }
 
-    [Range(typeof(decimal), "0", "99999999.99")]
+    [Range(typeof(decimal), "0", "99999999.99", ParseLimitsInInvariantCulture = true, ConvertValueInInvariantCulture = true)]
     public decimal? ProteinGrams { get; set; }
 
-    [Range(typeof(decimal), "0", "99999999.99")]
+    [Range(typeof(decimal), "0", "99999999.99", ParseLimitsInInvariantCulture = true, ConvertValueInInvariantCulture = true)]
     public decimal? CarbsGrams { get; set; }
 
-    [Range(typeof(decimal), "0", "99999999.99")]
+    [Range(typeof(decimal), "0", "99999999.99", ParseLimitsInInvariantCulture = true, ConvertValueInInvariantCulture = true)]
     public decimal? FatGrams { get; set; }
 
     public bool ClearProteinGrams { get; set; }

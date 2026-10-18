@@ -13,17 +13,20 @@ namespace Foodiya.Application.Services;
 
 public sealed class RecipeImageService : IRecipeImageService
 {
+    private readonly IResourceAuthorization _authorization;
     private readonly IRecipeImageRepository _recipeImageRepo;
     private readonly IGenericRepository<Recipe> _recipeRepo;
     private readonly IMapper _mapper;
     private readonly IRecipeImageFactory _factory;
 
     public RecipeImageService(
+        IResourceAuthorization authorization,
         IRecipeImageRepository recipeImageRepo,
         IGenericRepository<Recipe> recipeRepo,
         IMapper mapper,
         IRecipeImageFactory factory)
     {
+        _authorization = authorization;
         _recipeImageRepo = recipeImageRepo;
         _recipeRepo = recipeRepo;
         _mapper = mapper;
@@ -69,6 +72,7 @@ public sealed class RecipeImageService : IRecipeImageService
     public async Task<RecipeImageDetailResponse> CreateAsync(CreateRecipeImageRequest request, CancellationToken ct = default)
     {
         request.RecipeId = (await _recipeRepo.GetRequiredByUuidAsync(request.RecipeUuid, nameof(Recipe), ct)).Id;
+        await _authorization.RequireRecipeOwnerAsync(request.RecipeId, ct);
         await EnsureRecipeExistsAsync(request.RecipeId, ct);
 
         if (request.IsPrimary)
@@ -86,6 +90,7 @@ public sealed class RecipeImageService : IRecipeImageService
     {
         var recipeImage = await _recipeImageRepo.GetRequiredByUuidAsync(uuid, nameof(RecipeImage), ct);
 
+        await _authorization.RequireRecipeOwnerAsync(recipeImage.RecipeId, ct);
         await EnsureRecipeExistsAsync(recipeImage.RecipeId, ct);
 
         _factory.Update(recipeImage, request);
@@ -103,6 +108,7 @@ public sealed class RecipeImageService : IRecipeImageService
     {
         var recipeImage = await _recipeImageRepo.GetRequiredByUuidAsync(uuid, nameof(RecipeImage), ct);
 
+        await _authorization.RequireRecipeOwnerAsync(recipeImage.RecipeId, ct);
         _recipeImageRepo.Delete(recipeImage);
         await _recipeImageRepo.SaveAsync(ct);
     }
