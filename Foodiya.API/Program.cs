@@ -3,6 +3,7 @@ using Foodiya.API.Extensions;
 using Foodiya.Infrastructure.Extensions;
 using Foodiya.Application.Extensions;
 using Microsoft.OpenApi;
+using Scalar.AspNetCore;
 
 public partial class Program
 {
@@ -77,6 +78,15 @@ public partial class Program
 
         app.UseSwagger();
         app.UseSwaggerUI();
+
+        if (app.Environment.IsDevelopment())
+        {
+            app.MapScalarApiReference(options => options
+                .WithTitle("Foodiya API Reference")
+                .WithTheme(ScalarTheme.BluePlanet)
+                .WithOpenApiRoutePattern("/swagger/{documentName}/swagger.json")
+                .AddPreferredSecuritySchemes(["Bearer"]));
+        }
 
         app.UseAuthentication();
         app.UseMiddleware<IdentityProfileProvisioningMiddleware>();

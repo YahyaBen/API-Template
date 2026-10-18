@@ -17,18 +17,30 @@ Apply this sequence for a fresh database:
 4. `Migration_RefreshToken.sql`
 5. `Migration_GoogleAuth_AppUserExternalLogin.sql`
 6. `Migration_SaaS_Referential_Standardization.sql`
-7. `Migration_Uuid_Code_AllTables.sql`
-8. `Migration_AddColor_ChefDifficultyRecipeAppUserRecipeNutrition.sql`
-9. `Migration_ImageUrl_AllTables.sql`
-10. `Migration_DailyRecipeStats.sql`
+7. `Migration_DailyRecipeStats.sql`
+8. `Migration_Uuid_Code_AllTables.sql`
+9. `Migration_AddColor_ChefDifficultyRecipeAppUserRecipeNutrition.sql`
+10. `Migration_ImageUrl_AllTables.sql`
 11. `Migration_StatsDate_DateToDatetime2.sql`
 12. `Migration_IdentityInboxMessage.sql`
 13. `Migration_AppUserEmail256.sql`
 14. `Migration_IdentityProfileUnicodeNames.sql`
 
-The schema comes from the existing Foodiya project. This sequence needs a fresh
-database smoke test in your SQL environment before deployment. For an existing
-database, determine which changes are already applied before running scripts.
+The statistics table must exist before the UUID/code and image migrations run.
+For an existing database, determine which changes are already applied before
+running scripts.
+
+For a new local SQL Server database using Windows authentication, the helper
+creates the database and executes this sequence with SQL error checking:
+
+```powershell
+./foodrecipe.SqlServer/Initialize-Database.ps1 -Server . -DatabaseName FoodiyaLocal
+```
+
+The helper refuses to change an existing database. Its logs are written under
+`artifacts/database/` and are excluded from Git. It trusts the local SQL Server
+certificate; use your deployment's reviewed authentication/TLS settings for
+remote environments.
 
 `Migration_LocalAuth_DemoUserPasswords.sql` is an optional legacy demo script;
 the current APIs authenticate through the separate Identity service.

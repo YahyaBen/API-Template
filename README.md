@@ -78,6 +78,7 @@ dotnet run --project Foodiya.API --launch-profile http
 | Identity Scalar documentation, Development only | `http://localhost:5000/scalar/v1` |
 | Identity discovery | `http://localhost:5000/.well-known/openid-configuration` |
 | Identity public signing keys | `http://localhost:5000/.well-known/jwks.json` |
+| Foodiya Scalar documentation, Development only | `http://localhost:5135/scalar/v1` |
 | Foodiya Swagger UI | `http://localhost:5135/swagger` |
 | Foodiya liveness | `http://localhost:5135/health` |
 
@@ -91,6 +92,22 @@ Development email delivery logs OTPs instead of sending real email. This Identit
 version confirms registration first and uses a separate login request to obtain
 tokens. It does not include Sandbox's combined `isOtpValidated` login-response
 contract. See [the Identity API guide](foodiya.app.Identity/README.md).
+
+On Windows with PowerShell 7.4 or later, after configuring the databases you can
+start both APIs in the background and run the live smoke test:
+
+```powershell
+./scripts/Start-LocalApis.ps1
+./scripts/Test-LocalApis.ps1
+```
+
+The launcher uses the configured connection strings, disables RabbitMQ workers
+for this local HTTP test, and binds both APIs to localhost. It refuses occupied
+ports. Process IDs and logs are stored under `artifacts/local-run/`, outside Git.
+The smoke test creates a synthetic account, reads its Development OTP from the
+local log, and tests authentication, authorized collection reads, role checks,
+refresh rotation, logout, and invalid JWT rejection. It does not print passwords,
+OTPs, or tokens. Run it only against the intended local test databases.
 
 ## Test
 
@@ -178,5 +195,15 @@ Validated on 2026-10-18 with .NET SDK 10.0.401:
 - All five Docker Compose configurations validated with example values, without
   loading local credentials or starting containers.
 
-Live SQL Server/RabbitMQ tests and end-to-end deployment were not performed.
-The Docker daemon was not available on the assembly machine.
+Further local validation on 2026-10-18:
+
+- Four additional SQL Server integration tests passed.
+- Foodiya initialized successfully from an empty SQL Server database after
+  correcting the statistics-table migration order; all Identity migrations applied.
+- Both Scalar interfaces rendered in the browser and returned HTTP 200 for
+  interactive health requests.
+- All 41 live smoke checks passed, including Identity JWT access to 19 Foodiya
+  collection endpoints and the reference-data endpoint.
+
+The APIs were run against isolated local SQL Server databases. RabbitMQ and
+Azure deployment were not tested; the Docker daemon was not available.
