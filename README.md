@@ -28,7 +28,8 @@ independently and have no project references.
 
 The services own separate SQL Server databases.
 
-1. Create the Foodiya database using [the SQL guide](foodrecipe.SqlServer/README.md).
+1. Run `./foodrecipe.SqlServer/Initialize-Database.ps1` to create `FoodiyaLocal`
+   from the single schema-and-seed baseline. See [the SQL guide](foodrecipe.SqlServer/README.md).
 2. Copy `Foodiya.API/appsettings.Local.example.json` to
    `Foodiya.API/appsettings.Local.json` and configure its connection string.
 3. Identity Development defaults to Windows LocalDB, database `FOODIYA_APP_IDENTITY`.

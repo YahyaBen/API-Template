@@ -63,14 +63,13 @@ retain events for queues that have not yet been declared.
 
 ## Enable the Foodiya profile consumer
 
-Apply `../../foodrecipe.SqlServer/Migration_IdentityInboxMessage.sql` to the Foodiya
-database, followed by `../../foodrecipe.SqlServer/Migration_AppUserEmail256.sql`,
-then `../../foodrecipe.SqlServer/Migration_IdentityProfileUnicodeNames.sql`, using
-the existing SQL deployment process. These migrations are idempotent. The
-email migration uses `nvarchar(256)`, matching Identity's Unicode email storage;
-profile names use `nvarchar(100)`. The changes preserve email uniqueness and
-existing profile data. The broker
-and consumer do not run database schema updates at startup.
+Initialize a fresh Foodiya database with
+`./foodrecipe.SqlServer/Initialize-Database.ps1` from the repository root.
+The single `Initialize.sql` baseline includes the inbox table, Unicode email
+storage (`nvarchar(256)`), and Unicode profile names (`nvarchar(100)`).
+Databases initialized with the previous complete script sequence already have
+this schema and need no changes. The broker and consumer do not run database
+schema updates at startup.
 
 From the repository root, with the existing Foodiya Compose configuration:
 
@@ -104,7 +103,7 @@ valid events queued until the dependency recovers.
 The worker declares a durable topic exchange `foodiya.identity.events`, a quorum
 queue `foodiya.profiles.identity` bound to `identity.#`, and a dead-letter exchange
 and queue. Start the consumer before the publisher so the queue bindings exist.
-First run the broker, then the SQL inbox migration and Foodiya consumer, then
+First run the broker, then initialize Foodiya's database and start its consumer, then
 enable Identity's RabbitMQ outbox.
 
 ## Event contract and processing

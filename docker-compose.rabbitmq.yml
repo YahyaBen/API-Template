@@ -1,4 +1,4 @@
-# Apply the Identity inbox, email and Unicode-name SQL migrations before enabling.
+# Initialize the Foodiya database before enabling this consumer.
 services:
   api:
     env_file:
