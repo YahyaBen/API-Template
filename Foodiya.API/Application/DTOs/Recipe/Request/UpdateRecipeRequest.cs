@@ -48,10 +48,13 @@ public sealed class UpdateRecipeRequest
 
     public bool? IsActive { get; set; }
 
+    [MaxLength(100)]
     public ICollection<Guid>? FoodCategoryUuids { get; set; }
 
     [JsonIgnore]
     public ICollection<int>? FoodCategoryIds { get; set; }
+    [MaxLength(100)]
     public ICollection<CreateRecipeStepRequest>? Steps { get; set; }
+    [MaxLength(100)]
     public ICollection<CreateRecipeIngredientItem>? Ingredients { get; set; }
 }

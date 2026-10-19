@@ -24,6 +24,7 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
     {
         var (statusCode, title) = exception switch
         {
+            BadHttpRequestException badRequest => (badRequest.StatusCode, "Invalid HTTP Request"),
             FoodiyaNotFoundException        => (StatusCodes.Status404NotFound,            "Resource Not Found"),
             FoodiyaNullArgumentException     => (StatusCodes.Status404NotFound,            "Resource Not Found"),
             FoodiyaUnauthorizedException     => (StatusCodes.Status401Unauthorized,        "Unauthorized"),
@@ -34,7 +35,10 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
             _                                   => (StatusCodes.Status500InternalServerError, "Internal Server Error")
         };
 
-        _logger.LogError(exception, "Unhandled exception — {Title}: {Message}", title, exception.Message);
+        if (statusCode >= 500)
+            _logger.LogError(exception, "Unhandled exception — {Title}: {Message}", title, exception.Message);
+        else
+            _logger.LogWarning("Request rejected with HTTP {StatusCode}: {Title}", statusCode, title);
 
         var detail = exception is FoodiyaBaseException
             ? exception.Message

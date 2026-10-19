@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using Foodiya.Domain.Interfaces.Specifications;
+using Foodiya.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Foodiya.Infrastructure.Data;
@@ -34,11 +35,19 @@ public static class SpecificationEvaluator<T> where T : class
             query = query.Where(criteria);
         }
 
+        if (typeof(T) == typeof(Recipe) && spec.AsNoTracking
+            && spec.IncludeExpressions.Count(include => include.PreviousInclude == null && include.IsCollection) > 1)
+            query = query.AsSplitQuery();
+
         // Ordering
         if (spec.OrderBy is not null)
             query = query.OrderBy(spec.OrderBy);
         else if (spec.OrderByDescending is not null)
             query = query.OrderByDescending(spec.OrderByDescending);
+
+        if (typeof(T) == typeof(Recipe) && spec.Take.HasValue
+            && (spec.OrderBy is not null || spec.OrderByDescending is not null))
+            query = ((IOrderedQueryable<T>)query).ThenBy(entity => EF.Property<int>(entity, "Id"));
 
         // GroupBy
         if (spec.GroupBy is not null)
