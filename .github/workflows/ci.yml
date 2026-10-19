@@ -10,6 +10,22 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: 'Y'
+          MSSQL_PID: Developer
+          MSSQL_SA_PASSWORD: 'Ci-Test-${{ github.run_id }}-Only!9'
+          SQLCMDPASSWORD: 'Ci-Test-${{ github.run_id }}-Only!9'
+        ports:
+          - '127.0.0.1:1433:1433'
+        options: >-
+          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -C -b -Q 'SELECT 1'"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 30
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-dotnet@v6
@@ -30,3 +46,12 @@ jobs:
           --output artifacts/publish/identity
       - name: Verify HTTP startup without external dependencies
         run: bash scripts/Test-ApiStartup.sh
+      - name: Verify authorization and authentication against isolated SQL databases
+        shell: pwsh
+        env:
+          SQLCMDPASSWORD: 'Ci-Test-${{ github.run_id }}-Only!9'
+          LANG: fr_FR.UTF-8
+          LC_ALL: fr_FR.UTF-8
+        run: >-
+          ./scripts/Test-Integration.ps1 -Server 'localhost,1433'
+          -UseSqlAuthentication -SqlServerContainer '${{ job.services.sqlserver.id }}'

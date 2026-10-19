@@ -16,6 +16,8 @@ $identityUrl='http://localhost:5200'; $apiUrl='http://localhost:5235'
 $processes=[Collections.Generic.List[Diagnostics.Process]]::new()
 $createdDatabases=[Collections.Generic.List[string]]::new()
 $oldIdentityConnection=$env:ConnectionStrings__IdentityDatabase
+$oldArtifactsPath=$env:ArtifactsPath
+if($ArtifactsRoot){$env:ArtifactsPath=[IO.Path]::GetFullPath((Join-Path $repositoryRoot $ArtifactsRoot))}
 if($UseSqlAuthentication -and -not $env:SQLCMDPASSWORD){throw 'Set SQLCMDPASSWORD for the dedicated SQL test server.'}
 if($SqlServerContainer -and -not $UseSqlAuthentication){throw 'Container SQL setup requires -UseSqlAuthentication.'}
 if(-not $SqlServerContainer -and -not (Get-Command sqlcmd -ErrorAction SilentlyContinue)){throw 'Install sqlcmd or pass -SqlServerContainer.'}
@@ -48,6 +50,11 @@ function Start-TestApi([string]$project,[string]$url,[hashtable]$environment,[st
     $arguments=@('"'+$dll+'"','--urls',$url,'--contentRoot','"'+(Join-Path $repositoryRoot $project)+'"')
     $parameters=@{FilePath=(Get-Command dotnet).Source;ArgumentList=$arguments;WorkingDirectory=$repositoryRoot;Environment=$environment;RedirectStandardOutput=(Join-Path $runDirectory "$label.stdout.log");RedirectStandardError=(Join-Path $runDirectory "$label.stderr.log");PassThru=$true}
     if([OperatingSystem]::IsWindows()){$parameters.WindowStyle='Hidden'}
+    foreach($address in @([Net.IPAddress]::Loopback,[Net.IPAddress]::IPv6Loopback)){
+        if($address.AddressFamily -eq [Net.Sockets.AddressFamily]::InterNetworkV6 -and -not [Net.Sockets.Socket]::OSSupportsIPv6){continue}
+        $probe=[Net.Sockets.TcpListener]::new($address,([uri]$url).Port)
+        try{$probe.Start()}catch{throw "Integration port $(([uri]$url).Port) is occupied."}finally{$probe.Stop()}
+    }
     $process=Start-Process @parameters
     $processes.Add($process)
     $healthy=$false
@@ -84,16 +91,20 @@ try {
     $apiEnvironment=@{ASPNETCORE_ENVIRONMENT='Development';DOTNET_ENVIRONMENT='Development';ConnectionStrings__DefaultConnection=(Get-TestConnection $apiDatabase);Authentication__Jwt__Authority=$identityUrl;Authentication__Jwt__Issuer=$identityUrl;Authentication__Jwt__Audience='foodiya.app.Identity.Clients';IdentityEvents__Enabled='false'}
     Start-TestApi 'foodiya.app.Identity.Api' $identityUrl $identityEnvironment 'identity'
     Start-TestApi 'Foodiya.API' $apiUrl $apiEnvironment 'api'
-    & (Join-Path $PSScriptRoot 'Test-ResourceAuthorization.ps1') -ApiUrl $apiUrl -Issuer $identityUrl -SigningKeyPath $keyPath
+    $limitedEnvironment=$apiEnvironment.Clone(); $limitedEnvironment['ApiLimits__PermitLimit']='2'
+    Start-TestApi 'Foodiya.API' 'http://localhost:5265' $limitedEnvironment 'limited-api'
+    & (Join-Path $PSScriptRoot 'Test-ResourceAuthorization.ps1') -ApiUrl $apiUrl -Issuer $identityUrl -SigningKeyPath $keyPath -LimitedApiUrl http://localhost:5265
     if(-not $SkipAuthenticationSmoke){
         & (Join-Path $PSScriptRoot 'Test-LocalApis.ps1') -IdentityUrl $identityUrl -ApiUrl $apiUrl -IdentityLogPath (Join-Path $runDirectory 'identity.stdout.log')
     }
+    & (Join-Path $PSScriptRoot 'Test-Hosting.ps1')
 } finally {
     foreach($process in $processes){
         if(-not $process.HasExited){Stop-Process -InputObject $process -ErrorAction SilentlyContinue; $null=$process.WaitForExit(5000)}
         $process.Dispose()
     }
     $env:ConnectionStrings__IdentityDatabase=$oldIdentityConnection
+    $env:ArtifactsPath=$oldArtifactsPath
     foreach($database in $createdDatabases){
         if($database -notmatch '^ApiTemplate_Test_[a-f0-9]{12}_(Foodiya|Identity)$'){throw 'Refusing cleanup of a non-test database.'}
         try{Invoke-TestSql 'master' "DROP DATABASE [$database];"}catch{Write-Warning "Test database $database could not be removed; it was not forcibly disconnected."}

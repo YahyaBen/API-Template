@@ -2,7 +2,8 @@
 param(
     [Parameter(Mandatory)][string]$ApiUrl,
     [Parameter(Mandatory)][string]$Issuer,
-    [Parameter(Mandatory)][string]$SigningKeyPath
+    [Parameter(Mandatory)][string]$SigningKeyPath,
+    [string]$LimitedApiUrl
 )
 $ErrorActionPreference='Stop'
 foreach($url in @($ApiUrl,$Issuer)){if(-not ([uri]$url).IsLoopback){throw 'Security tests require loopback API URLs.'}}
@@ -25,6 +26,7 @@ function Request([string]$name,[string]$method,[string]$path,$actor,[int]$expect
     if($null -ne $body){$parameters.ContentType='application/json';$parameters.Body=ConvertTo-Json -InputObject $body -Depth 10 -Compress}
     $response=Invoke-WebRequest @parameters
     if([int]$response.StatusCode -ne $expected){throw "$name returned HTTP $($response.StatusCode), expected $expected. Inspect the ignored integration logs."}
+    if($expected -eq 429 -and -not $response.Headers['Retry-After']){throw 'Rate limit rejection omitted Retry-After.'}
     $checks.Add([pscustomobject]@{Check=$name;Status=[int]$response.StatusCode})
     if($response.Content -and $response.Headers['Content-Type'] -match 'json'){
         $content=if($response.Content -is [byte[]]){[Text.Encoding]::UTF8.GetString($response.Content)}else{[string]$response.Content}
@@ -126,6 +128,26 @@ try {
     $null=Request 'Owner can deactivate recipe' PATCH "$draftPath/toggle-active" $owner
     $null=Request 'Inactive recipe hidden from others' GET $draftPath $stranger 404
     $null=Request 'Owner can still read inactive recipe' GET $draftPath $owner
+
+    foreach($query in @('page=0','page=-1','page=2147483647','pageSize=0','pageSize=-1','pageSize=101')){
+        $null=Request "Invalid pagination rejected: $query" GET "/api/Recipe?$query" $owner 400
+    }
+    $null=Request 'Maximum page size accepted' GET '/api/Recipe?pageSize=100' $owner
+    $tooManySteps=@(1..101 | ForEach-Object {@{StepNumber=1;Instruction='Bounded collection'}})
+    $null=Request 'Oversized nested collection rejected' POST "/api/Recipe/$($chef.uuid)" $owner 400 @{Title='Bounded steps';DifficultyUuid=$refs.difficulties[0].uuid;Servings=2;Steps=$tooManySteps}
+    $null=Request 'Oversized request body rejected' POST "/api/Recipe/$($chef.uuid)" $owner 413 @{Title=('x'*1048600);DifficultyUuid=$refs.difficulties[0].uuid;Servings=2}
+    if($LimitedApiUrl){
+        if(-not ([uri]$LimitedApiUrl).IsLoopback){throw 'The rate limit test requires a loopback URL.'}
+        $originalUrl=$ApiUrl
+        try {
+            $ApiUrl=$LimitedApiUrl
+            $limited=New-Actor 'USER'; $independent=New-Actor 'USER'
+            $null=Request 'First request within quota accepted' GET '/api/Referential' $limited
+            $null=Request 'Second request within quota accepted' GET '/api/Referential' $limited
+            $null=Request 'Excess requests limited with Retry-After' GET '/api/Referential' $limited 429
+            $null=Request 'Another account has an independent quota' GET '/api/Referential' $independent
+        } finally {$ApiUrl=$originalUrl}
+    }
 
     $null=Request 'Cannot forge deletion audit actor' DELETE $path $owner 403 @{DeletedByUserUuid=$other.Uuid;DeleteReason='Integration cleanup'}
     $null=Request 'Other chef cannot delete recipe' DELETE $path $other 403 @{DeletedByUserUuid=$other.Uuid;DeleteReason='Integration cleanup'}
