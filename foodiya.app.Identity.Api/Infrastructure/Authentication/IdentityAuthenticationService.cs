@@ -213,12 +213,9 @@ internal sealed class IdentityAuthenticationService(
             IsolationLevel.Serializable,
             cancellationToken);
 
-        // Serialize attempts for the same token before reading its state. Shared
-        // SERIALIZABLE reads otherwise deadlock when concurrent refreshes upgrade locks.
         var currentToken = await dataContext.RefreshTokens
-            .FromSqlInterpolated($"SELECT * FROM [dbo].[RefreshTokens] WITH (UPDLOCK) WHERE [TokenHash] = {tokenHash}")
             .AsNoTracking()
-            .SingleOrDefaultAsync(cancellationToken);
+            .SingleOrDefaultAsync(token => token.TokenHash == tokenHash, cancellationToken);
 
         if (currentToken is null)
         {

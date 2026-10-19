@@ -1,8 +1,0 @@
-# Local container overrides; production uses docker-compose.yml without this file.
-services:
-  api:
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      CorsOrigins__0: ${DEVELOPMENT_CORS_ORIGIN:-http://localhost:4200}
-    ports: !override
-      - "127.0.0.1:8080:8080"

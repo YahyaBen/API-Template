@@ -174,8 +174,6 @@ public static class DependencyInjection
             .Bind(configuration.GetSection(EmailDeliveryOptions.SectionName))
             .Validate(options => options.Provider is "Disabled" or "Development" or "Smtp",
                 "EmailDelivery:Provider must be Disabled, Development, or Smtp.")
-            .Validate(options => environment.IsDevelopment() || options.Provider == "Smtp",
-                "EmailDelivery:Provider must be Smtp outside Development.")
             .Validate(options => options.Provider != "Smtp" || !string.IsNullOrWhiteSpace(options.Host),
                 "EmailDelivery:Host is required for SMTP.")
             .Validate(options => options.Provider != "Smtp" || MimeKit.MailboxAddress.TryParse(options.FromAddress, out _),

@@ -79,7 +79,7 @@ public sealed class ChefProfileController : BaseController
     /// </remarks>
     /// <param name="uuid">Chef profile UUID</param>
     /// <param name="request">Updated chef profile payload</param>
-    [Authorize(Roles = AppRoleConstants.All)]
+    [Authorize(Roles = AppRoleConstants.AdminOrAbove)]
     [HttpPatch("{uuid:guid}")]
     [ProducesResponseType(typeof(ChefProfileDetailResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]

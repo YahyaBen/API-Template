@@ -124,16 +124,9 @@ private keys, and artifacts are ignored by Git.
 
 ## Verification
 
-GitHub Actions builds and publishes both projects, then runs startup checks and
-SQL-backed security/hosting integration checks using disposable databases.
-Run `./scripts/Test-Integration.ps1` after a Release build for the same checks on
-local SQL Server. No additional .NET test projects are required.
-
-The latest hardening pass passed 167 local checks: 99 authorization/visibility/
-request-limit checks, 45 authentication checks including concurrent refresh reuse,
-and 23 hosting checks including SQL outages and Production configuration.
-See [production hardening](docs/production-hardening.md) for access rules,
-configuration, commands, and the remaining staging validation.
+GitHub Actions builds and publishes both projects, then checks HTTP startup,
+Scalar, OpenAPI, discovery, and anonymous access rejection without a database.
+Use `scripts/Test-LocalApis.ps1` with local SQL for full authentication checks.
 
 Validated after consolidation on 2026-10-18: both projects built in Release with
 zero warnings and errors, both published successfully, and all 41 live HTTP

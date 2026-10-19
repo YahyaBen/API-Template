@@ -13,20 +13,17 @@ namespace Foodiya.Application.Services;
 
 public sealed class RecipeStepService : IRecipeStepService
 {
-    private readonly IResourceAuthorization _authorization;
     private readonly IRecipeStepRepository _recipeStepRepo;
     private readonly IGenericRepository<Recipe> _recipeRepo;
     private readonly IMapper _mapper;
     private readonly IRecipeStepFactory _factory;
 
     public RecipeStepService(
-        IResourceAuthorization authorization,
         IRecipeStepRepository recipeStepRepo,
         IGenericRepository<Recipe> recipeRepo,
         IMapper mapper,
         IRecipeStepFactory factory)
     {
-        _authorization = authorization;
         _recipeStepRepo = recipeStepRepo;
         _recipeRepo = recipeRepo;
         _mapper = mapper;
@@ -36,9 +33,7 @@ public sealed class RecipeStepService : IRecipeStepService
     public async Task<RecipeStepDetailResponse?> GetByIdAsync(Guid uuid, CancellationToken ct = default)
     {
         var recipeStep = await _recipeStepRepo.GetByUuidAsync(uuid, ct);
-        if (recipeStep is null) return null;
-        await _authorization.RequireRecipeReadAsync(recipeStep.RecipeId, ct);
-        return await GetByIdInternalAsync(recipeStep.Id, ct);
+        return recipeStep is null ? null : await GetByIdInternalAsync(recipeStep.Id, ct);
     }
 
     public async Task<PaginatedResponse<RecipeStepDetailResponse>> ListAsync(
@@ -54,10 +49,6 @@ public sealed class RecipeStepService : IRecipeStepService
 
         var listSpec = new RecipeStepListSpecification(page, pageSize, recipeId, search);
         var countSpec = new RecipeStepCountSpecification(recipeId, search);
-
-        var access = await _authorization.GetReadAccessAsync(ct);
-        listSpec.RestrictTo(access.Children((RecipeStep child) => child.Recipe, allowUnlisted: recipeUuid.HasValue));
-        countSpec.RestrictTo(access.Children((RecipeStep child) => child.Recipe, allowUnlisted: recipeUuid.HasValue));
 
         var items = await _recipeStepRepo.ListAsync(listSpec, ct);
         var totalCount = await _recipeStepRepo.CountAsync(countSpec, ct);
@@ -77,7 +68,6 @@ public sealed class RecipeStepService : IRecipeStepService
     public async Task<RecipeStepDetailResponse> CreateAsync(CreateRecipeStepItemRequest request, CancellationToken ct = default)
     {
         request.RecipeId = (await _recipeRepo.GetRequiredByUuidAsync(request.RecipeUuid, nameof(Recipe), ct)).Id;
-        await _authorization.RequireRecipeOwnerAsync(request.RecipeId, ct);
         await EnsureRecipeExistsAsync(request.RecipeId, ct);
 
         var recipeStep = _factory.Create(request);
@@ -92,7 +82,6 @@ public sealed class RecipeStepService : IRecipeStepService
     {
         var recipeStep = await _recipeStepRepo.GetRequiredByUuidAsync(uuid, nameof(RecipeStep), ct);
 
-        await _authorization.RequireRecipeOwnerAsync(recipeStep.RecipeId, ct);
         await EnsureRecipeExistsAsync(recipeStep.RecipeId, ct);
 
         _factory.Update(recipeStep, request);
@@ -107,7 +96,6 @@ public sealed class RecipeStepService : IRecipeStepService
     {
         var recipeStep = await _recipeStepRepo.GetRequiredByUuidAsync(uuid, nameof(RecipeStep), ct);
 
-        await _authorization.RequireRecipeOwnerAsync(recipeStep.RecipeId, ct);
         _recipeStepRepo.Delete(recipeStep);
         await _recipeStepRepo.SaveAsync(ct);
     }

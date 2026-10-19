@@ -13,7 +13,6 @@ namespace Foodiya.Application.Services;
 
 public sealed class RecipeLikeService : IRecipeLikeService
 {
-    private readonly IResourceAuthorization _authorization;
     private readonly IRecipeLikeRepository _recipeLikeRepo;
     private readonly IGenericRepository<Recipe> _recipeRepo;
     private readonly IGenericRepository<AppUser> _userRepo;
@@ -21,14 +20,12 @@ public sealed class RecipeLikeService : IRecipeLikeService
     private readonly IRecipeLikeFactory _factory;
 
     public RecipeLikeService(
-        IResourceAuthorization authorization,
         IRecipeLikeRepository recipeLikeRepo,
         IGenericRepository<Recipe> recipeRepo,
         IGenericRepository<AppUser> userRepo,
         IMapper mapper,
         IRecipeLikeFactory factory)
     {
-        _authorization = authorization;
         _recipeLikeRepo = recipeLikeRepo;
         _recipeRepo = recipeRepo;
         _userRepo = userRepo;
@@ -39,7 +36,6 @@ public sealed class RecipeLikeService : IRecipeLikeService
     public async Task<RecipeLikeDetailResponse?> GetByIdAsync(Guid recipeUuid, Guid userUuid, CancellationToken ct = default)
     {
         var recipeId = (await _recipeRepo.GetRequiredByUuidAsync(recipeUuid, nameof(Recipe), ct)).Id;
-        await _authorization.RequireRecipeReadAsync(recipeId, ct);
         var userId = (await _userRepo.GetRequiredByUuidAsync(userUuid, nameof(AppUser), ct)).Id;
         var recipeLike = await _recipeLikeRepo.GetSingleAsync(new RecipeLikeByIdSpecification(recipeId, userId), ct);
         return recipeLike is null ? null : _mapper.Map<RecipeLikeDetailResponse>(recipeLike);
@@ -57,10 +53,6 @@ public sealed class RecipeLikeService : IRecipeLikeService
         var userId = userUuid.HasValue ? (await _userRepo.GetRequiredByUuidAsync(userUuid.Value, nameof(AppUser), ct)).Id : (int?)null;
         var listSpec = new RecipeLikeListSpecification(page, pageSize, recipeId, userId, search);
         var countSpec = new RecipeLikeCountSpecification(recipeId, userId, search);
-
-        var access = await _authorization.GetReadAccessAsync(ct);
-        listSpec.RestrictTo(access.Children((RecipeLike child) => child.Recipe, allowUnlisted: recipeUuid.HasValue));
-        countSpec.RestrictTo(access.Children((RecipeLike child) => child.Recipe, allowUnlisted: recipeUuid.HasValue));
 
         var items = await _recipeLikeRepo.ListAsync(listSpec, ct);
         var totalCount = await _recipeLikeRepo.CountAsync(countSpec, ct);
@@ -80,8 +72,7 @@ public sealed class RecipeLikeService : IRecipeLikeService
     public async Task<RecipeLikeDetailResponse> CreateAsync(CreateRecipeLikeRequest request, CancellationToken ct = default)
     {
         request.RecipeId = (await _recipeRepo.GetRequiredByUuidAsync(request.RecipeUuid, nameof(Recipe), ct)).Id;
-        request.UserId = await _authorization.GetActorIdAsync(request.UserUuid, ct);
-        await _authorization.RequireRecipeReadAsync(request.RecipeId, ct);
+        request.UserId = (await _userRepo.GetRequiredByUuidAsync(request.UserUuid, nameof(AppUser), ct)).Id;
         await EnsureRecipeExistsAsync(request.RecipeId, ct);
         await EnsureUserExistsAsync(request.UserId, ct);
 
@@ -100,8 +91,8 @@ public sealed class RecipeLikeService : IRecipeLikeService
     public async Task DeleteAsync(Guid recipeUuid, Guid userUuid, CancellationToken ct = default)
     {
         var recipeId = (await _recipeRepo.GetRequiredByUuidAsync(recipeUuid, nameof(Recipe), ct)).Id;
-        var userId = await _authorization.GetActorIdAsync(userUuid, ct);
-        var recipeLike = await _recipeLikeRepo.GetSingleAsync(like => like.RecipeId == recipeId && like.UserId == userId, ct)
+        var userId = (await _userRepo.GetRequiredByUuidAsync(userUuid, nameof(AppUser), ct)).Id;
+        var recipeLike = await _recipeLikeRepo.GetSingleAsync(new RecipeLikeByIdSpecification(recipeId, userId), ct)
             ?? throw new FoodiyaNotFoundException($"RecipeLike with Recipe ID {recipeId} and User ID {userId} not found.");
 
         _recipeLikeRepo.Delete(recipeLike);

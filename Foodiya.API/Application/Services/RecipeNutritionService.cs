@@ -13,20 +13,17 @@ namespace Foodiya.Application.Services;
 
 public sealed class RecipeNutritionService : IRecipeNutritionService
 {
-    private readonly IResourceAuthorization _authorization;
     private readonly IRecipeNutritionRepository _recipeNutritionRepo;
     private readonly IGenericRepository<Recipe> _recipeRepo;
     private readonly IMapper _mapper;
     private readonly IRecipeNutritionFactory _factory;
 
     public RecipeNutritionService(
-        IResourceAuthorization authorization,
         IRecipeNutritionRepository recipeNutritionRepo,
         IGenericRepository<Recipe> recipeRepo,
         IMapper mapper,
         IRecipeNutritionFactory factory)
     {
-        _authorization = authorization;
         _recipeNutritionRepo = recipeNutritionRepo;
         _recipeRepo = recipeRepo;
         _mapper = mapper;
@@ -36,7 +33,6 @@ public sealed class RecipeNutritionService : IRecipeNutritionService
     public async Task<RecipeNutritionDetailResponse?> GetByIdAsync(Guid recipeUuid, CancellationToken ct = default)
     {
         var recipeId = (await _recipeRepo.GetRequiredByUuidAsync(recipeUuid, nameof(Recipe), ct)).Id;
-        await _authorization.RequireRecipeReadAsync(recipeId, ct);
         var recipeNutrition = await _recipeNutritionRepo.GetSingleAsync(new RecipeNutritionByIdSpecification(recipeId), ct);
         return recipeNutrition is null ? null : _mapper.Map<RecipeNutritionDetailResponse>(recipeNutrition);
     }
@@ -51,10 +47,6 @@ public sealed class RecipeNutritionService : IRecipeNutritionService
         var recipeId = recipeUuid.HasValue ? (await _recipeRepo.GetRequiredByUuidAsync(recipeUuid.Value, nameof(Recipe), ct)).Id : (int?)null;
         var listSpec = new RecipeNutritionListSpecification(page, pageSize, recipeId, search);
         var countSpec = new RecipeNutritionCountSpecification(recipeId, search);
-
-        var access = await _authorization.GetReadAccessAsync(ct);
-        listSpec.RestrictTo(access.Children((RecipeNutrition child) => child.Recipe, allowUnlisted: recipeUuid.HasValue));
-        countSpec.RestrictTo(access.Children((RecipeNutrition child) => child.Recipe, allowUnlisted: recipeUuid.HasValue));
 
         var items = await _recipeNutritionRepo.ListAsync(listSpec, ct);
         var totalCount = await _recipeNutritionRepo.CountAsync(countSpec, ct);
@@ -74,7 +66,6 @@ public sealed class RecipeNutritionService : IRecipeNutritionService
     public async Task<RecipeNutritionDetailResponse> CreateAsync(CreateRecipeNutritionRequest request, CancellationToken ct = default)
     {
         request.RecipeId = (await _recipeRepo.GetRequiredByUuidAsync(request.RecipeUuid, nameof(Recipe), ct)).Id;
-        await _authorization.RequireRecipeOwnerAsync(request.RecipeId, ct);
         await EnsureRecipeExistsAsync(request.RecipeId, ct);
 
         var existing = await _recipeNutritionRepo.GetByIdAsync(request.RecipeId, ct: ct);
@@ -95,7 +86,6 @@ public sealed class RecipeNutritionService : IRecipeNutritionService
         var recipeNutrition = await _recipeNutritionRepo.GetByIdAsync(recipeId, ct: ct)
             ?? throw new FoodiyaNotFoundException($"RecipeNutrition for Recipe UUID {recipeUuid} not found.");
 
-        await _authorization.RequireRecipeOwnerAsync(recipeId, ct);
         await EnsureRecipeExistsAsync(recipeId, ct);
 
         _factory.Update(recipeNutrition, request);
@@ -112,7 +102,6 @@ public sealed class RecipeNutritionService : IRecipeNutritionService
         var recipeNutrition = await _recipeNutritionRepo.GetByIdAsync(recipeId, ct: ct)
             ?? throw new FoodiyaNotFoundException($"RecipeNutrition for Recipe UUID {recipeUuid} not found.");
 
-        await _authorization.RequireRecipeOwnerAsync(recipeNutrition.RecipeId, ct);
         _recipeNutritionRepo.Delete(recipeNutrition);
         await _recipeNutritionRepo.SaveAsync(ct);
     }

@@ -14,7 +14,6 @@ namespace Foodiya.Application.Services;
 
 public sealed class ChefProfileService : IChefProfileService
 {
-    private readonly IResourceAuthorization _authorization;
     private readonly IGenericRepository<ChefProfile> _chefProfileRepo;
     private readonly IGenericRepository<AppUser> _userRepo;
     private readonly IGenericRepository<Recipe> _recipeRepo;
@@ -23,7 +22,6 @@ public sealed class ChefProfileService : IChefProfileService
     private readonly IChefProfileFactory _factory;
 
     public ChefProfileService(
-        IResourceAuthorization authorization,
         IGenericRepository<ChefProfile> chefProfileRepo,
         IGenericRepository<AppUser> userRepo,
         IGenericRepository<Recipe> recipeRepo,
@@ -31,7 +29,6 @@ public sealed class ChefProfileService : IChefProfileService
         IDateTimeProvider dateTimeProvider,
         IChefProfileFactory factory)
     {
-        _authorization = authorization;
         _chefProfileRepo = chefProfileRepo;
         _userRepo = userRepo;
         _recipeRepo = recipeRepo;
@@ -109,7 +106,6 @@ public sealed class ChefProfileService : IChefProfileService
     public async Task<ChefProfileDetailResponse> UpdateAsync(Guid uuid, UpdateChefProfileRequest request, CancellationToken ct = default)
     {
         var chefProfile = await _chefProfileRepo.GetRequiredByUuidAsync(uuid, nameof(ChefProfile), ct);
-        await _authorization.RequireChefOwnerAsync(chefProfile.Id, ct);
 
         _factory.Update(chefProfile, request);
 
@@ -122,7 +118,6 @@ public sealed class ChefProfileService : IChefProfileService
     public async Task<ChefProfileDetailResponse> ToggleVerifiedAsync(Guid uuid, CancellationToken ct = default)
     {
         var chefProfile = await _chefProfileRepo.GetRequiredByUuidAsync(uuid, nameof(ChefProfile), ct);
-        await _authorization.RequireChefOwnerAsync(chefProfile.Id, ct);
 
         chefProfile.IsVerified = !chefProfile.IsVerified;
 
@@ -135,7 +130,6 @@ public sealed class ChefProfileService : IChefProfileService
     public async Task DeleteAsync(Guid uuid, SoftDeleteRequest request, CancellationToken ct = default)
     {
         var chefProfile = await _chefProfileRepo.GetRequiredByUuidAsync(uuid, nameof(ChefProfile), ct);
-        await _authorization.RequireChefOwnerAsync(chefProfile.Id, ct);
 
         if (chefProfile.DeletedAt is not null)
             throw new FoodiyaBadRequestException($"ChefProfile with UUID {uuid} is already deleted.");
@@ -144,7 +138,7 @@ public sealed class ChefProfileService : IChefProfileService
         if (hasActiveRecipes)
             throw new FoodiyaBadRequestException("Cannot delete a ChefProfile that still owns active recipes.");
 
-        request.DeletedByUserId = await _authorization.GetActorIdAsync(request.DeletedByUserUuid, ct);
+        request.DeletedByUserId = (await _userRepo.GetRequiredByUuidAsync(request.DeletedByUserUuid, nameof(AppUser), ct)).Id;
         chefProfile.DeletedAt = _dateTimeProvider.UtcNow;
         chefProfile.DeletedByUserId = request.DeletedByUserId;
         chefProfile.DeleteReason = request.DeleteReason;

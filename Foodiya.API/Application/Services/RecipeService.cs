@@ -13,7 +13,6 @@ namespace Foodiya.Application.Services;
 
 public sealed class RecipeService : IRecipeService
 {
-    private readonly IResourceAuthorization _authorization;
     private readonly IGenericRepository<Recipe> _recipeRepo;
     private readonly IGenericRepository<FoodCategory> _categoryRepo;
     private readonly IGenericRepository<Ingredient> _ingredientRepo;
@@ -28,7 +27,6 @@ public sealed class RecipeService : IRecipeService
     private readonly IDateTimeProvider _dateTimeProvider;
 
     public RecipeService(
-        IResourceAuthorization authorization,
         IGenericRepository<Recipe> recipeRepo,
         IGenericRepository<FoodCategory> categoryRepo,
         IGenericRepository<Ingredient> ingredientRepo,
@@ -42,7 +40,6 @@ public sealed class RecipeService : IRecipeService
         IRecipeFactory factory,
         IDateTimeProvider dateTimeProvider)
     {
-        _authorization = authorization;
         _recipeRepo = recipeRepo;
         _categoryRepo = categoryRepo;
         _ingredientRepo = ingredientRepo;
@@ -62,9 +59,7 @@ public sealed class RecipeService : IRecipeService
     public async Task<RecipeDetailResponse?> GetByIdAsync(Guid uuid, CancellationToken ct = default)
     {
         var recipe = await _recipeRepo.GetByUuidAsync(uuid, ct);
-        if (recipe is null) return null;
-        await _authorization.RequireRecipeReadAsync(recipe.Id, ct);
-        return await GetByIdInternalAsync(recipe.Id, ct);
+        return recipe is null ? null : await GetByIdInternalAsync(recipe.Id, ct);
     }
 
     public async Task<PaginatedResponse<RecipeDetailResponse>> ListAsync(
@@ -105,7 +100,6 @@ public sealed class RecipeService : IRecipeService
     public async Task<RecipeDetailResponse> CreateAsync(Guid chefUuid, CreateRecipeRequest request, CancellationToken ct = default)
     {
         var chef = await _chefRepo.GetRequiredByUuidAsync(chefUuid, nameof(ChefProfile), ct);
-        await _authorization.RequireChefOwnerAsync(chef.Id, ct);
         await ResolveRecipeRequestAsync(request, ct);
 
         var recipe = _factory.Create(chef.Id, request);
@@ -122,7 +116,6 @@ public sealed class RecipeService : IRecipeService
     public async Task<RecipeDetailResponse> UpdateAsync(Guid uuid, UpdateRecipeRequest request, CancellationToken ct = default)
     {
         var lookup = await _recipeRepo.GetRequiredByUuidAsync(uuid, nameof(Recipe), ct);
-        await _authorization.RequireRecipeOwnerAsync(lookup.Id, ct);
         var recipe = await _recipeRepo.GetSingleAsync(new RecipeForUpdateSpecification(lookup.Id), ct)
             ?? throw new FoodiyaNotFoundException($"Recipe with UUID {uuid} not found.");
 
@@ -144,7 +137,6 @@ public sealed class RecipeService : IRecipeService
     public async Task<RecipeDetailResponse> ToggleActiveAsync(Guid uuid, CancellationToken ct = default)
     {
         var recipe = await _recipeRepo.GetRequiredByUuidAsync(uuid, nameof(Recipe), ct);
-        await _authorization.RequireRecipeOwnerAsync(recipe.Id, ct);
 
         recipe.IsActive = !recipe.IsActive;
         recipe.DateModif = _dateTimeProvider.UtcNow;
@@ -158,12 +150,11 @@ public sealed class RecipeService : IRecipeService
     public async Task DeleteAsync(Guid uuid, SoftDeleteRequest request, CancellationToken ct = default)
     {
         var recipe = await _recipeRepo.GetRequiredByUuidAsync(uuid, nameof(Recipe), ct);
-        await _authorization.RequireRecipeOwnerAsync(recipe.Id, ct);
 
         if (recipe.DeletedAt is not null)
             throw new FoodiyaBadRequestException($"Recipe with UUID {uuid} is already deleted.");
 
-        request.DeletedByUserId = await _authorization.GetActorIdAsync(request.DeletedByUserUuid, ct);
+        request.DeletedByUserId = (await _userRepo.GetRequiredByUuidAsync(request.DeletedByUserUuid, nameof(AppUser), ct)).Id;
         recipe.DeletedAt = _dateTimeProvider.UtcNow;
         recipe.DeletedByUserId = request.DeletedByUserId;
         recipe.DeleteReason = request.DeleteReason;

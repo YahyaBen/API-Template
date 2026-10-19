@@ -4,7 +4,6 @@ using Foodiya.Infrastructure.Extensions;
 using Foodiya.Application.Extensions;
 using Microsoft.OpenApi;
 using Scalar.AspNetCore;
-using ApiTemplate.Hosting;
 
 public partial class Program
 {
@@ -13,12 +12,10 @@ public partial class Program
         var builder = WebApplication.CreateBuilder(args);
         builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
         builder.Configuration.AddEnvironmentVariables();
-        builder.Services.AddApiHosting(builder.Configuration, builder.Environment);
-        builder.Services.AddApiRequestLimits(builder.Configuration);
         builder.Services.AddIdentityAuthentication(builder.Configuration, builder.Environment);
 
         // Add services to the container.
-        builder.Services.AddControllers(options => options.Filters.Add<PaginationValidationFilter>());
+        builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
         {
@@ -70,19 +67,20 @@ public partial class Program
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
         builder.Services.AddInfrastructure(builder.Configuration, builder.Environment.IsDevelopment());
         builder.Services.AddServices();
-        builder.Services.AddHealthChecks().AddCheck<SqlReadinessCheck>("database", tags: ["ready"], timeout: TimeSpan.FromSeconds(5));
+        builder.Services.AddCors();
 
         var app = builder.Build();
 
-        app.UseForwardedHeaders();
         app.UseExceptionHandler();
 
-        app.UseCors();
+        var corsOrigins = app.Configuration.GetSection("CorsOrigins").Get<string[]>() ?? [];
+        app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().WithOrigins(corsOrigins));
+
+        app.UseSwagger();
+        app.UseSwaggerUI();
 
         if (app.Environment.IsDevelopment())
         {
-            app.UseSwagger();
-            app.UseSwaggerUI();
             app.MapScalarApiReference(options => options
                 .WithTitle("Foodiya API Reference")
                 .WithTheme(ScalarTheme.BluePlanet)
@@ -91,11 +89,10 @@ public partial class Program
         }
 
         app.UseAuthentication();
-        app.UseRateLimiter();
-        app.UseAuthorization();
         app.UseMiddleware<IdentityProfileProvisioningMiddleware>();
+        app.UseAuthorization();
 
-        app.MapControllers().RequireRateLimiting("api");
+        app.MapControllers();
 
         app.MapGet("/health", () => Results.Ok("Healthy"));
         app.MapHealthChecks("/health/ready");

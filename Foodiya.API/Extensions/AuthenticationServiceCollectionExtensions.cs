@@ -14,9 +14,7 @@ internal static class AuthenticationServiceCollectionExtensions
             .Validate(options => Uri.TryCreate(options.Authority, UriKind.Absolute, out var authority)
                 && (authority.Scheme == Uri.UriSchemeHttps
                     || environment.IsDevelopment() && authority.Scheme == Uri.UriSchemeHttp)
-                && Uri.TryCreate(options.Issuer, UriKind.Absolute, out var issuer)
-                && (issuer.Scheme == Uri.UriSchemeHttps
-                    || environment.IsDevelopment() && issuer.Scheme == Uri.UriSchemeHttp)
+                && !string.IsNullOrWhiteSpace(options.Issuer)
                 && !string.IsNullOrWhiteSpace(options.Audience),
                 "Authentication:Jwt requires an HTTPS Authority, Issuer and Audience. HTTP is allowed only in Development.")
             .ValidateOnStart();

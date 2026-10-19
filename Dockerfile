@@ -16,7 +16,6 @@ COPY --from=build /app/publish ./
 
 ENV ASPNETCORE_URLS=http://+:8080
 EXPOSE 8080
-USER $APP_UID
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=3 \
   CMD ["curl", "--fail", "--silent", "http://localhost:8080/health"]
